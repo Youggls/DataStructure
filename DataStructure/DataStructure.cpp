@@ -1,13 +1,15 @@
 #include "DataStructure.h"
 
 //binaryTreeNode inplement
-binaryTreeNode::binaryTreeNode(const char& dat) {
+template <class T>
+binaryTreeNode<T>::binaryTreeNode(const char& dat) {
 	data = dat;
 	leftChildNode = NULL;
 	rightChildNode = NULL;
 }
 
-binaryTreeNode::binaryTreeNode(const char& dat, binaryTreeNode* l, binaryTreeNode* r) {
+template <class T>
+binaryTreeNode<T>::binaryTreeNode(const char& dat, binaryTreeNode<T>* l, binaryTreeNode<T>* r) {
 	leftChildNode = l;
 	rightChildNode = r;
 	data = dat;
@@ -15,30 +17,34 @@ binaryTreeNode::binaryTreeNode(const char& dat, binaryTreeNode* l, binaryTreeNod
 
 
 //binaryTree implement
-binaryTreeNode* binaryTree::recursiveMakeTree(string inOrder, string preOrder) {
+template <class T>
+binaryTreeNode<T>* binaryTree<T>::recursiveMakeTree(string inOrder, string preOrder) {
 	if (inOrder.size() != preOrder.size()) throw badInput();
 	size_t nodeNum = inOrder.size();
 
 	size_t root_index = inOrder.find(preOrder.at(0));
 //	if (root_index == string::npos) throw badInput();
 
-	binaryTreeNode* root = new binaryTreeNode(preOrder.at(0));
+	binaryTreeNod<T>e* root = new binaryTreeNode<T>(preOrder.at(0));
 	if (root_index > 0) root->setLeftChildNode(recursiveMakeTree(inOrder.substr(0, root_index), preOrder.substr(1, root_index)));
 	if (root_index + 1 < nodeNum) root->setRightChildNode(recursiveMakeTree(inOrder.substr(root_index + 1, nodeNum - root_index), preOrder.substr(root_index + 1, nodeNum - root_index - 1)));
 	return root;
 }
 
-const char* binaryTree::badInput() {
+template <class T>
+const char* binaryTree<T>::badInput() {
 	char s[] = "Wrong Input!";
 	std::cout << s;
 	return s;
 }
 
-void binaryTree::makeTree(string& inOrder, string& preOrder) {
+template <class T>
+void binaryTree<T>::makeTree(string& inOrder, string& preOrder) {
 	root = recursiveMakeTree(inOrder, preOrder);
 }
 
-size_t binaryTree::recursiveGetDepth(binaryTreeNode* t) {
+template <class T>
+size_t binaryTree<T>::recursiveGetDepth(binaryTreeNode<T>* t) {
 	if (t == NULL) return 0;
 	size_t dl = recursiveGetDepth(t->getLeftChildNode());
 	size_t dr = recursiveGetDepth(t->getRightChildNode());
@@ -46,6 +52,7 @@ size_t binaryTree::recursiveGetDepth(binaryTreeNode* t) {
 	else return ++dr;
 }
 
-size_t binaryTree::depth() {
+template <class T>
+size_t binaryTree<T>::depth() {
 	return recursiveGetDepth(root);
 }

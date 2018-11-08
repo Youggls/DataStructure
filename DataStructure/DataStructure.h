@@ -3,9 +3,11 @@
 using std::string;
 
 namespace dataStructure {
+	template <class T>
 	class binaryTree;
+	template <class T>
 	class binaryTreeNode;
-	class hashTable;
+//	class hashTable;
 	template <class T>
 	class linkedList;
 	template <class T>
@@ -22,6 +24,7 @@ namespace dataStructure {
 
 using namespace dataStructure;
 
+template <class T>
 class dataStructure::binaryTreeNode {
 private:
 	char data;
@@ -38,7 +41,7 @@ public:
 };
 
 
-
+template <class T>
 class dataStructure::binaryTree {
 private:
 	binaryTreeNode* root;
