@@ -27,26 +27,26 @@ using namespace dataStructure;
 template <class T>
 class dataStructure::binaryTreeNode {
 private:
-	char data;
-	binaryTreeNode* leftChildNode;
-	binaryTreeNode* rightChildNode;
+	T data;
+	binaryTreeNode<T>* leftChildNode;
+	binaryTreeNode<T>* rightChildNode;
 public:
 	binaryTreeNode(const char& dat);
-	binaryTreeNode(const char& dat, binaryTreeNode* l, binaryTreeNode* r);
-	void setLeftChildNode(binaryTreeNode* node) { leftChildNode = node; };
-	void setRightChildNode(binaryTreeNode* node) { rightChildNode = node; };
-	binaryTreeNode* getLeftChildNode() { return leftChildNode; };
-	binaryTreeNode* getRightChildNode() { return rightChildNode; };
-	const char getData() { return data; };
+	binaryTreeNode(const char& dat, binaryTreeNode<T>* l, binaryTreeNode<T>* r);
+	void setLeftChildNode(binaryTreeNode<T>* node) { leftChildNode = node; };
+	void setRightChildNode(binaryTreeNode<T>* node) { rightChildNode = node; };
+	binaryTreeNode<T>* getLeftChildNode() { return leftChildNode; };
+	binaryTreeNode<T>* getRightChildNode() { return rightChildNode; };
+	const T getData() { return data; };
 };
 
 
 template <class T>
 class dataStructure::binaryTree {
 private:
-	binaryTreeNode* root;
-	binaryTreeNode* recursiveMakeTree(string inOrder, string preOrder);
-	size_t recursiveGetDepth(binaryTreeNode* t);
+	binaryTreeNode<T>* root;
+	binaryTreeNode<T>* recursiveMakeTree(string inOrder, string preOrder);
+	size_t recursiveGetDepth(binaryTreeNode<T>* t);
 	const char* badInput();
 public:
 	binaryTree() { root = NULL; };
