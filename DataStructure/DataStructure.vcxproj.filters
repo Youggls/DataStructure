@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DataStructure.h">
+    <ClInclude Include="DataStructure.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
