@@ -1,6 +1,7 @@
 #pragma once
 #include "binaryTree.h"
 #include "MaxHeap.h"
+#include "BinarySearchTree.h"
 
 //namespace dataStructure {
 	//template <class T>
