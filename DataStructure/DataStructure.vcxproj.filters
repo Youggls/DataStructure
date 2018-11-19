@@ -26,5 +26,14 @@
     <ClInclude Include="DataStructure.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="binaryTree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MaxHeap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BinarySearchTree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
