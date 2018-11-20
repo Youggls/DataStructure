@@ -36,15 +36,9 @@ binaryTreeNode<T>* binarySearchTree<T>::search(const T& thekey) {
 	binaryTreeNode<T>* temp = binaryTree<T>::getRoot();
 	while (true) {
 		if (temp == NULL) return NULL;
-		else if (thekey == temp->getData()) {
-			return temp;
-		}
-		else if (thekey < temp->getData()) {
-			temp = temp->getLeftChildNode();
-		}
-		else if(thekey > temp->getData()){
-			temp = temp->getRightChildNode();
-		}
+		else if (thekey == temp->getData()) return temp;
+		else if (thekey < temp->getData()) temp = temp->getLeftChildNode();
+		else if(thekey > temp->getData()) temp = temp->getRightChildNode();
 	}
 }
 
@@ -54,18 +48,9 @@ void binarySearchTree<T>::insert(const T& theKey) {
 	binaryTreeNode<T>* target = NULL;
 	while (tmp) {
 		target = tmp;
-		if (theKey < tmp->getData()) {
-			int a;
-			tmp = tmp->getLeftChildNode();
-		}
-		else if (theKey > tmp->getData()) {
-			int a;
-			tmp = tmp->getRightChildNode();
-		}
-		else {
-			int a;
-			throw binaryTree<T>::badInput();
-		}
+		if (theKey < tmp->getData()) tmp = tmp->getLeftChildNode();
+		else if (theKey > tmp->getData()) tmp = tmp->getRightChildNode();
+		else throw binaryTree<T>::badInput();
 	}
 
 	binaryTreeNode<T>* newNode = new binaryTreeNode<T>(theKey);
