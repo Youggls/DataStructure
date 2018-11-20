@@ -37,6 +37,12 @@ private:
 	binaryTreeNode<T>* root;
 	binaryTreeNode<T>* recursiveMakeTree(T* inOrder, T* preOrder, size_t length, size_t inLeft, size_t preLeft);
 	size_t recursiveGetDepth(binaryTreeNode<T>* t);
+protected:
+	binaryTreeNode<T>* getRoot() { return root; };
+	void setNullRoot(binaryTreeNode<T>* node) {
+		if (root) throw badInput();
+		root = node;
+	}
 	const char* badInput();
 public:
 	binaryTree() { root = NULL; };
