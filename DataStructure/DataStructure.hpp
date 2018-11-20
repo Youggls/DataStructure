@@ -2,6 +2,7 @@
 #include "binaryTree.h"
 #include "MaxHeap.h"
 #include "BinarySearchTree.h"
+#include "arraryList.h"
 
 //namespace dataStructure {
 	//template <class T>

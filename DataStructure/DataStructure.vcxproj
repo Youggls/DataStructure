@@ -122,6 +122,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="arraryList.h" />
     <ClInclude Include="BinarySearchTree.h" />
     <ClInclude Include="binaryTree.h" />
     <ClInclude Include="DataStructure.hpp" />

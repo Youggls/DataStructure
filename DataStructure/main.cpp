@@ -7,21 +7,11 @@ using std::string;
 using namespace dataStructure;
 
 int main() {
-	binarySearchTree<char> bst;
-	//string a, b;
-	//cin >> a >> b;
-	//char* aa = const_cast<char*>(a.c_str());
-	//char* bb = const_cast<char*>(b.c_str());
-	//bst.makeTree(bb, aa, a.size());
-	//char c = 'A';
-	//binaryTreeNode<char>* t = bst.search(c);
-	//cout << t;
-	char a[] = "asdfasdfasdf";
-	bst.insert(a[0]);
-	bst.insert(a[1]);
-	bst.insert(a[2]);
-//	bst.insert(a[0]);
-	cout << bst.depth();
+	int a[10] = { 0,1,2,3,4,5,6,7,8,9 };
+	arrayList<int> arr(a, 10);
+	for (int i = 0; i < 10; i++) {
+		cout << arr.at(i) << ' ';
+	}
 	system("pause");
 	return 0;
 }
