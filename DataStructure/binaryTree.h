@@ -22,38 +22,38 @@ private:
 	binaryTreeNode<T>* leftChildNode;
 	binaryTreeNode<T>* rightChildNode;
 public:
-	binaryTreeNode(const char& dat);
-	binaryTreeNode(const char& dat, binaryTreeNode<T>* l, binaryTreeNode<T>* r);
+	binaryTreeNode(const T& dat);
+	binaryTreeNode(const T& dat, binaryTreeNode<T>* l, binaryTreeNode<T>* r);
 	void setLeftChildNode(binaryTreeNode<T>* node) { leftChildNode = node; };
 	void setRightChildNode(binaryTreeNode<T>* node) { rightChildNode = node; };
 	binaryTreeNode<T>* getLeftChildNode() { return leftChildNode; };
 	binaryTreeNode<T>* getRightChildNode() { return rightChildNode; };
-	const T getData() { return data; };
+	T& getData() { return data; };
 };
 
 template <class T>
 class dataStructure::binaryTree {
 private:
 	binaryTreeNode<T>* root;
-	binaryTreeNode<T>* recursiveMakeTree(string inOrder, string preOrder);
+	binaryTreeNode<T>* recursiveMakeTree(T* inOrder, T* preOrder, size_t length, size_t inLeft, size_t preLeft);
 	size_t recursiveGetDepth(binaryTreeNode<T>* t);
 	const char* badInput();
 public:
 	binaryTree() { root = NULL; };
 	bool isEmpty() { return (root == NULL); };
-	void makeTree(string& inOrder, string& preOrder);
+	void makeTree(T* inOrder, T* preOrder, size_t length);
 	size_t depth();
 };
 
 template <class T>
-dataStructure::binaryTreeNode<T>::binaryTreeNode(const char& dat) {
+dataStructure::binaryTreeNode<T>::binaryTreeNode(const T& dat) {
 	data = dat;
 	leftChildNode = NULL;
 	rightChildNode = NULL;
 }
 
 template <class T>
-dataStructure::binaryTreeNode<T>::binaryTreeNode(const char& dat, binaryTreeNode<T>* l, binaryTreeNode<T>* r) {
+dataStructure::binaryTreeNode<T>::binaryTreeNode(const T& dat, binaryTreeNode<T>* l, binaryTreeNode<T>* r) {
 	leftChildNode = l;
 	rightChildNode = r;
 	data = dat;
@@ -62,16 +62,25 @@ dataStructure::binaryTreeNode<T>::binaryTreeNode(const char& dat, binaryTreeNode
 
 //binaryTree implement
 template <class T>
-binaryTreeNode<T>* binaryTree<T>::recursiveMakeTree(string inOrder, string preOrder) {
-	if (inOrder.size() != preOrder.size()) throw badInput();
-	size_t nodeNum = inOrder.size();
-
-	size_t root_index = inOrder.find(preOrder.at(0));
+binaryTreeNode<T>* binaryTree<T>::recursiveMakeTree(T* inOrder, T* preOrder, size_t length, size_t inLeft, size_t preLeft) {
+	//if (inOrder.size() != preOrder.size()) throw badInput();
+	//size_t nodeNum = inOrder.size();
+	size_t nodeNum = length;
+//	size_t root_index = inOrder.find(preOrder.at(0));
+	size_t root_index = inLeft;
+	for (size_t i = inLeft; i < length; i++) {
+		if (inOrder[i] == preOrder[preLeft]) {
+			root_index = i;
+			break;
+		}
+	}
 	//	if (root_index == string::npos) throw badInput();
 
-	binaryTreeNode<T>* root = new binaryTreeNode<T>(preOrder.at(0));
-	if (root_index > 0) root->setLeftChildNode(recursiveMakeTree(inOrder.substr(0, root_index), preOrder.substr(1, root_index)));
-	if (root_index + 1 < nodeNum) root->setRightChildNode(recursiveMakeTree(inOrder.substr(root_index + 1, nodeNum - root_index), preOrder.substr(root_index + 1, nodeNum - root_index - 1)));
+	binaryTreeNode<T>* root = new binaryTreeNode<T>(preOrder[preLeft]);
+//	if (root_index > 0) root->setLeftChildNode(recursiveMakeTree(inOrder.substr(0, root_index), preOrder.substr(1, root_index)));
+	if (root_index > inLeft) root->setLeftChildNode(recursiveMakeTree(inOrder, preOrder, root_index - inLeft, inLeft, preLeft + 1));
+//	if (root_index + 1 < nodeNum) root->setRightChildNode(recursiveMakeTree(inOrder.substr(root_index + 1, nodeNum - root_index), preOrder.substr(root_index + 1, nodeNum - root_index - 1)));
+	if (root_index + 1 < nodeNum) root->setRightChildNode(recursiveMakeTree(inOrder, preOrder, nodeNum - root_index + inLeft - 1, root_index + 1, preLeft + root_index + 1));
 	return root;
 }
 
@@ -83,8 +92,8 @@ const char* binaryTree<T>::badInput() {
 }
 
 template <class T>
-void binaryTree<T>::makeTree(string& inOrder, string& preOrder) {
-	root = recursiveMakeTree(inOrder, preOrder);
+void binaryTree<T>::makeTree(T* inOrder, T* preOrder, size_t length) {
+	root = recursiveMakeTree(inOrder, preOrder,length, 0, 0);
 }
 
 template <class T>
