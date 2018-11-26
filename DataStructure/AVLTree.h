@@ -47,7 +47,7 @@ namespace dataStructure {
 		root = NULL;
 		num = 0;
 	}
-	
+
 	template <class T>
 	size_t AVLTree<T>::recursiveGetDepth(AVLTreeNode<T>* node) {
 		if (node == NULL) return 0;
@@ -119,37 +119,59 @@ namespace dataStructure {
 			if (tmp->getBf() == 1)
 			{
 				//LL
-				if ((insertPos->getData() < tmp->getData()) &&						
-					(element < tmp->getLeftChildNode()->getData()))
-				{
+				if ((insertPos->getData() < tmp->getData()) && (element < tmp->getLeftChildNode()->getData())) {
 					//tmp is at the left side of it's ancestor
-					if (tmp->getData() < ancestor->getData()) 
+					if (tmp->getData() < ancestor->getData())
 					{
-						ancestor->setLeftChildNode(tmp->getLeftChildNode());
-						tmp->setLeftChildNode(ancestor->getLeftChildNode()->getRightChildNode());
-						ancestor->getLeftChildNode()->setRightChildNode(tmp);
-						tmp->changeBf(0);
-						ancestor->getLeftChildNode(0);
+						if (ancestor == NULL) {
+							root = tmp->getLeftChildNode();
+							root->setLeftChildNode(tmp->getLeftChildNode()->getRightChildNode());
+							root->setRightChildNode(tmp);
+							root->getRightChildNode()->changeBf(0);
+						}
+						else {
+							ancestor->setLeftChildNode(tmp->getLeftChildNode());
+							tmp->setLeftChildNode(ancestor->getLeftChildNode()->getRightChildNode());
+							ancestor->getLeftChildNode()->setRightChildNode(tmp);
+							tmp->changeBf(0);
+							ancestor->getLeftChildNode()->changeBf(0);
+						}
 					}
 					//tmp is at the right side of it's ancestor
-					else 
+					else
 					{
-						ancestor->setRightChildNode(tmp->getLeftChildNode());
-						tmp->setLeftChildNode(ancestor->getRightChildNode()->getRightChildNode());
-						ancestor->getRightChildNode()->setRightChildNode(tmp);
+						if (ancestor == NULL) {
+							root = tmp->getLeftChildNode();
+							root->setLeftChildNode(tmp->getLeftChildNode()->getRightChildNode());
+							root->setRightChildNode(tmp);
+							root->getRightChildNode()->changeBf(0);
+						}
+						else {
+							ancestor->setRightChildNode(tmp->getLeftChildNode());
+							tmp->setLeftChildNode(ancestor->getRightChildNode()->getRightChildNode());
+							ancestor->getRightChildNode()->setRightChildNode(tmp);
+							tmp->changeBf(0);
+							ancestor->getLeftChildNode(0);
+						}
 					}
 					return;
 				}
 				//LR
-				else if ((insertPos->getData() < tmp->getData()) &&
-						 (element > tmp->getLeftChildNode()->getData()))
-				{
+				else if ((insertPos->getData() < tmp->getData()) && (element > tmp->getLeftChildNode()->getData())) {
 					int dl = recursiveGetDepth(tmp->getLeftChildNode()->getRightChildNode()->getLeftChildNode());
 					int dr = recursiveGetDepth(tmp->getLeftChildNode()->getRightChildNode()->getRightChildNode());
 					int cbf = dl - dr;
 					tmp->getLeftChildNode()->getRightChildNode()->changeBf(cbf);
 
-					if (tmp->getData() < ancestor->getData()) {
+					if (ancestor == NULL) {
+						root = tmp->getLeftChildNode()->getRightChildNode();
+						tmp->getLeftChildNode()->setRightChildNode(NULL);
+						root->setLeftChildNode(tmp->getLeftChildNode());
+						tmp->setLeftChildNode(NULL);
+						root->setRightChildNode(tmp);
+						root->getRightChildNode()->changeBf(0);
+					}
+					else if (tmp->getData() < ancestor->getData()) {
 						ancestor->setLeftChildNode(tmp->getLeftChildNode()->getRightChildNode());
 						tmp->getLeftChildNode()->setRightChildNode(ancestor->getLeftChildNode()->getLeftChildNode());
 						ancestor->getLeftChildNode()->setLeftChildNode(tmp->getLeftChildNode());
@@ -211,7 +233,99 @@ namespace dataStructure {
 			}
 			//RL&RR
 			else if (tmp->getBf() == -1) {
+				//RR
+				if ((insertPos->getData() > tmp->getData()) &&
+					(element > tmp->getRightChildNode()->getData())) {
+					if (ancestor == NULL) {
+						root = tmp->getRightChildNode();
+						tmp->setRightChildNode(NULL);
+						root->setLeftChildNode(tmp);
+						root->getLeftChildNode()->changeBf(0);
+					}
+					else if (tmp->getData() < ancestor->getData()) {
+						ancestor->setLeftChildNode(tmp->getRightChildNode());
+						tmp->setRightChildNode(ancestor->getLeftChildNode()->getLeftChildNode());
+						ancestor->getLeftChildNode()->setLeftChildNode(tmp);
+						tmp->changeBf(0);
+						ancestor->getLeftChildNode(0);
+					}
+					else if (tmp->getData() > ancestor->getData()) {
+						ancestor->setRightChildNode(tmp->getRightChildNode());
+						tmp->setRightChildNode(ancestor->getRightChildNode()->getLeftChildNode());
+						ancestor->getRightChildNode()->setLeftChildNode(tmp);
+						tmp->changeBf(0);
+						ancestor->getRightChildNode(0);
+					}
+				}
+				//RL
+				else if ((insertPos->getData() > tmp->getData()) && (element < tmp->getRightChildNode()->getData())) {
+					int dl = recursiveGetDepth(tmp->getRightChildNode()->getLeftChildNode()->getLeftChildNode());
+					int dr = recursiveGetDepth(tmp->getRightChildNode()->getLeftChildNode()->getRightChildNode());
+					int cbf = dl - dr;
+					if (ancestor == NULL) {
+						root = tmp->getRightChildNode()->getLeftChildNode();
+						tmp->getRightChildNode()->setLeftChildNode(NULL);
+						root->setRightChildNode(tmp->getRightChildNode());
+						tmp->setRightChildNode(NULL);
+						root->setLeftChildNode(tmp);
+						root->getLeftChildNode()->changeBf(0);
+					}
+					else if (tmp->getData() < ancestor->getData()) {
+						ancestor->setLeftChildNode(tmp->getRightChildNode()->getLeftChildNode());
+						tmp->getRightChildNode()->setLeftChildNode(ancestor->getLeftChildNode()->getRightChildNode());
+						ancestor->getLeftChildNode()->setRightChildNode(tmp->getRightChildNode());
+						tmp->setRightChildNode(ancestor->getLeftChildNode()->getLeftChildNode());
+						ancestor->getLeftChildNode()->setLeftChildNode(tmp);
 
+						if (cbf == 0) {
+							ancestor->getLeftChildNode()->getLeftChildNode()->changeBf(0);
+							ancestor->getLeftChildNode()->getRightChildNode()->changeBf(0);
+						}
+						else if (cbf == 1) {
+							ancestor->getLeftChildNode()->getLeftChildNode()->changeBf(0);
+							ancestor->getLeftChildNode()->getRightChildNode()->changeBf(-1);
+						}
+						else if (cbf == -1) {
+							ancestor->getLeftChildNode()->getLeftChildNode()->changeBf(1);
+							ancestor->getLeftChildNode()->getRightChildNode()->changeBf(0);
+						}
+					}
+					else if (tmp->getData() > ancestor->getData()) {
+						ancestor->setRightChildNode(tmp->getRightChildNode()->getLeftChildNode());
+						tmp->getRightChildNode()->setLeftChildNode(ancestor->getRightChildNode()->getRightChildNode());
+						ancestor->getRightChildNode()->setRightChildNode(tmp->getRightChildNode());
+						tmp->setRightChildNode(ancestor->getRightChildNode()->getLeftChildNode());
+						ancestor->getRightChildNode()->setLeftChildNode(tmp);
+
+						if (cbf == 0) {
+							ancestor->getRightChildNode()->getLeftChildNode()->changeBf(0);
+							ancestor->getRightChildNode()->getRightChildNode()->changeBf(0);
+						}
+						else if (cbf == 1) {
+							ancestor->getRightChildNode()->getLeftChildNode()->changeBf(0);
+							ancestor->getRightChildNode()->getRightChildNode()->changeBf(-1);
+						}
+						else if (cbf == -1) {
+							ancestor->getRightChildNode()->getLeftChildNode()->changeBf(1);
+							ancestor->getRightChildNode()->getRightChildNode()->changeBf(0);
+						}
+					}
+				}
+				else {
+					t = tmp;
+					while (t) {
+						if (element > t->getData()) {
+							t->changeBf(t->getBf() - 1);
+							t = t->getRightChildNode();
+						}
+						else if (element < t->getData()) {
+							t->changeBf(t->getBf() + 1);
+							t = t->getLeftChildNode();
+						}
+						else return;
+					}
+					return;
+				}
 			}
 		}
 
