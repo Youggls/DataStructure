@@ -5,14 +5,19 @@ using std::cout;
 using std::endl;
 using std::string;
 using dataStructure::AVLTree;
+using dataStructure::AVLTreeNode;
+
+void visit(AVLTreeNode<int>* node) {
+	cout << node->getData() << ' ';
+}
 
 int main() {
 	AVLTree<int> avl;
-	int a[5] = { 88, 70, 61, 63, 65 };
-	for (int i = 0; i < 5; i++) {
+	int a[10] = { 62, 88, 58, 47, 35, 73, 51, 99, 37, 93, };
+	for (int i = 0; i < 10; i++) {
 		avl.insert(a[i]);
 	}
-	avl.levelOrder();
+	avl.levelOrder(visit);
 	system("pause");
 	return 0;
 }
