@@ -1,10 +1,21 @@
 #pragma once
 
+#ifndef IOSTREAM
+#define IOSTREAM
+#include <iostream>
+using std::cout;
+#endif // !IOSTREAM
 #ifndef BINARYTREE_H
 #define BINARYTREE_H
 #include "binaryTree.h"
 using dataStructure::binaryTreeNode;
 #endif // !BINARYTREE_H
+#ifndef STLQUEUE
+#define STLQUEUE
+#include <queue>
+using std::queue;
+#endif // !STLQUEUE
+
 
 
 namespace dataStructure {
@@ -19,11 +30,12 @@ namespace dataStructure {
 		AVLTreeNode(const T& dat) {
 			bf = 0;
 			leftChildNode = rightChildNode = NULL;
+			data = dat;
 		}
 		AVLTreeNode<T>* getRightChildNode() { return rightChildNode; };
 		AVLTreeNode<T>* getLeftChildNode() { return leftChildNode; };
-		void setRightChildNode(const AVLTreeNode<T>* node) { rightChildNode = node; };
-		void setLeftChildNode(const AVLTreeNode<T>* node) { leftChildNode = node; };
+		void setRightChildNode(AVLTreeNode<T>* node) { rightChildNode = node; };
+		void setLeftChildNode(AVLTreeNode<T>* node) { leftChildNode = node; };
 		const T& getData() { return data; };
 		void setData(const T& dat) { data = dat; };
 		void changeBf(const int& value) { bf = value; };
@@ -36,9 +48,19 @@ namespace dataStructure {
 		AVLTreeNode<T>* root;
 		size_t num;
 		size_t recursiveGetDepth(AVLTreeNode<T>* node);
+		void recursivePreOrder(AVLTreeNode<T>* node, void(*visit)(AVLTreeNode<T>*));
+		void recursiveInOrder(AVLTreeNode<T>* node, void(*visit)(AVLTreeNode<T>*));
+		void recursivePostOrder(AVLTreeNode<T>* node, void(*visit)(AVLTreeNode<T>*));
+		//		void recursiveLevelOrder(AVLTree<T>* node, void(*visit)(AVLTreeNode<T>*));
 	public:
 		AVLTree();
 		void insert(const T& element);
+		void preOrder(void(*visit)(AVLTreeNode<T>*) = NULL);
+		void inOrder(void(*visit)(AVLTreeNode<T>*) = NULL);
+		void postOrder(void(*visit)(AVLTreeNode<T>*) = NULL);
+		void levelOrder(void(*visit)(AVLTreeNode<T>*) = NULL);
+		//		bool isComplete();
+
 		size_t depth();
 	};
 
@@ -55,6 +77,90 @@ namespace dataStructure {
 		size_t dr = recursiveGetDepth(node->getRightChildNode());
 		if (dl > dr) return ++dl;
 		else return ++dr;
+	}
+
+	template<class T>
+	void AVLTree<T>::recursivePreOrder(AVLTreeNode<T>* node, void(*visit)(AVLTreeNode<T>*)) {
+		if (visit == NULL) {
+			if (node) {
+				cout << node->getData();
+				recursivePreOrder(node->getLeftChildNode(), visit);
+				recursivePreOrder(node->getRightChildNode(), visit);
+			}
+		}
+		else {
+			if (node) {
+				visit(node);
+				recursivePreOrder(node->getLeftChildNode(), visit);
+				recursivePreOrder(node->getRightChildNode(), visit);
+			}
+		}
+	}
+
+	template <class T>
+	void AVLTree<T>::recursiveInOrder(AVLTreeNode<T>* node, void(*visit)(AVLTreeNode<T>*)) {
+		if (visit == NULL) {
+			if (node) {
+				recursiveInOrder(node->getLeftChildNode(), visit);
+				cout << node->getData();
+				recursiveInOrder(node->getRightChildNode(), visit);
+			}
+		}
+		else {
+			if (node) {
+				recursiveInOrder(node->getLeftChildNode(), visit);
+				visit(node);
+				recursiveInOrder(node->getRightChildNode(), visit);
+			}
+		}
+	}
+
+	template <class T>
+	void AVLTree<T>::recursivePostOrder(AVLTreeNode<T>* node, void(*visit)(AVLTreeNode<T>*)) {
+		if (visit == NULL) {
+			if (node) {
+				recursivePostOrder(node->getLeftChildNode(), visit);
+				recursivePostOrder(node->getRightChildNode(), visit);
+				cout << node->getData();
+			}
+		}
+		else {
+			if (node) {
+				recursivePostOrder(node->getLeftChildNode(), visit);
+				recursivePostOrder(node->getRightChildNode(), visit);
+				visit(node);
+			}
+		}
+	}
+
+	template <class T>
+	void AVLTree<T>::levelOrder(void(*visit)(AVLTreeNode<T>*)) {
+		if (root == NULL) return;
+		queue<AVLTreeNode<T>*> prelist;
+		prelist.push(root);
+		while (prelist.size() != 0) {
+			AVLTreeNode<T>* front = prelist.front();
+			if (visit == NULL) cout << front->getData();
+			else visit(front);
+			prelist.pop();
+			if (front->getLeftChildNode() != NULL) prelist.push(front->getLeftChildNode());
+			if (front->getRightChildNode() != NULL) prelist.push(front->getRightChildNode());
+		}
+	}
+
+	template <class T>
+	void AVLTree<T>::preOrder(void(*visit)(AVLTreeNode<T>*)) {
+		recursivePreOrder(root);
+	}
+
+	template <class T>
+	void AVLTree<T>::inOrder(void(*visit)(AVLTreeNode<T>*)) {
+		recursiveInOrder(root);
+	}
+
+	template <class T>
+	void AVLTree<T>::postOrder(void(*visit)(AVLTreeNode<T>*)) {
+		recursivePostOrder(root);
 	}
 
 	template <class T>
@@ -77,7 +183,7 @@ namespace dataStructure {
 			if (t->getBf() != 0) tmp = t;
 			insertPos = t;
 			if (element > t->getData()) t = t->getRightChildNode();
-			else if (t < t->getData()) t = t->getLeftChildNode();
+			else if (element < t->getData()) t = t->getLeftChildNode();
 			else return;
 		}
 
@@ -102,8 +208,8 @@ namespace dataStructure {
 		}
 		else {
 			//insert element
-			if (element < insertPos->getData()) insertPos->setLeftChildNode(newNode));
-			else if (element > insertPos->getData()) insertPos->setRightChildNode(newNode));
+			if (element < insertPos->getData()) insertPos->setLeftChildNode(newNode);
+			else if (element > insertPos->getData()) insertPos->setRightChildNode(newNode);
 
 			//find the tmp's nearest ancestor
 			AVLTreeNode<T>* ancestor = NULL;
@@ -120,39 +226,31 @@ namespace dataStructure {
 			{
 				//LL
 				if ((insertPos->getData() < tmp->getData()) && (element < tmp->getLeftChildNode()->getData())) {
+					if (ancestor == NULL) {
+						root = tmp->getLeftChildNode();
+//						root->setLeftChildNode(tmp->getLeftChildNode()->getRightChildNode());
+						tmp->setLeftChildNode(NULL);
+						root->setRightChildNode(tmp);
+						root->getRightChildNode()->changeBf(0);
+						return;
+					}
 					//tmp is at the left side of it's ancestor
-					if (tmp->getData() < ancestor->getData())
+					else if (tmp->getData() < ancestor->getData())
 					{
-						if (ancestor == NULL) {
-							root = tmp->getLeftChildNode();
-							root->setLeftChildNode(tmp->getLeftChildNode()->getRightChildNode());
-							root->setRightChildNode(tmp);
-							root->getRightChildNode()->changeBf(0);
-						}
-						else {
-							ancestor->setLeftChildNode(tmp->getLeftChildNode());
-							tmp->setLeftChildNode(ancestor->getLeftChildNode()->getRightChildNode());
-							ancestor->getLeftChildNode()->setRightChildNode(tmp);
-							tmp->changeBf(0);
-							ancestor->getLeftChildNode()->changeBf(0);
-						}
+						ancestor->setLeftChildNode(tmp->getLeftChildNode());
+						tmp->setLeftChildNode(ancestor->getLeftChildNode()->getRightChildNode());
+						ancestor->getLeftChildNode()->setRightChildNode(tmp);
+						tmp->changeBf(0);
+						ancestor->getLeftChildNode()->changeBf(0);
 					}
 					//tmp is at the right side of it's ancestor
 					else
 					{
-						if (ancestor == NULL) {
-							root = tmp->getLeftChildNode();
-							root->setLeftChildNode(tmp->getLeftChildNode()->getRightChildNode());
-							root->setRightChildNode(tmp);
-							root->getRightChildNode()->changeBf(0);
-						}
-						else {
-							ancestor->setRightChildNode(tmp->getLeftChildNode());
-							tmp->setLeftChildNode(ancestor->getRightChildNode()->getRightChildNode());
-							ancestor->getRightChildNode()->setRightChildNode(tmp);
-							tmp->changeBf(0);
-							ancestor->getLeftChildNode(0);
-						}
+						ancestor->setRightChildNode(tmp->getLeftChildNode());
+						tmp->setLeftChildNode(ancestor->getRightChildNode()->getRightChildNode());
+						ancestor->getRightChildNode()->setRightChildNode(tmp);
+						tmp->changeBf(0);
+						ancestor->getLeftChildNode()->changeBf(0);
 					}
 					return;
 				}
@@ -170,6 +268,7 @@ namespace dataStructure {
 						tmp->setLeftChildNode(NULL);
 						root->setRightChildNode(tmp);
 						root->getRightChildNode()->changeBf(0);
+						return;
 					}
 					else if (tmp->getData() < ancestor->getData()) {
 						ancestor->setLeftChildNode(tmp->getLeftChildNode()->getRightChildNode());
@@ -241,20 +340,21 @@ namespace dataStructure {
 						tmp->setRightChildNode(NULL);
 						root->setLeftChildNode(tmp);
 						root->getLeftChildNode()->changeBf(0);
+						return;
 					}
 					else if (tmp->getData() < ancestor->getData()) {
 						ancestor->setLeftChildNode(tmp->getRightChildNode());
 						tmp->setRightChildNode(ancestor->getLeftChildNode()->getLeftChildNode());
 						ancestor->getLeftChildNode()->setLeftChildNode(tmp);
 						tmp->changeBf(0);
-						ancestor->getLeftChildNode(0);
+						ancestor->getLeftChildNode()->changeBf(0);
 					}
 					else if (tmp->getData() > ancestor->getData()) {
 						ancestor->setRightChildNode(tmp->getRightChildNode());
 						tmp->setRightChildNode(ancestor->getRightChildNode()->getLeftChildNode());
 						ancestor->getRightChildNode()->setLeftChildNode(tmp);
 						tmp->changeBf(0);
-						ancestor->getRightChildNode(0);
+						ancestor->getRightChildNode()->changeBf(0);
 					}
 				}
 				//RL
@@ -269,6 +369,7 @@ namespace dataStructure {
 						tmp->setRightChildNode(NULL);
 						root->setLeftChildNode(tmp);
 						root->getLeftChildNode()->changeBf(0);
+						return;
 					}
 					else if (tmp->getData() < ancestor->getData()) {
 						ancestor->setLeftChildNode(tmp->getRightChildNode()->getLeftChildNode());
