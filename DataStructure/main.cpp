@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using std::cin;
 using std::cout;
-using std::endl;
+using std::endl; 
 using std::queue;
 template <class T>
 class AVLTreeNode {
@@ -35,7 +35,6 @@ private:
 	void recursivePreOrder(AVLTreeNode<T>* node, void(*visit)(AVLTreeNode<T>*));
 	void recursiveInOrder(AVLTreeNode<T>* node, void(*visit)(AVLTreeNode<T>*));
 	void recursivePostOrder(AVLTreeNode<T>* node, void(*visit)(AVLTreeNode<T>*));
-	//		void recursiveLevelOrder(AVLTree<T>* node, void(*visit)(AVLTreeNode<T>*));
 public:
 	AVLTree();
 	void insert(const T& element);
@@ -217,6 +216,19 @@ void AVLTree<T>::insert(const T& element) {
 		{
 			//LL
 			if ((insertPos->getData() < tmp->getData()) && (element < tmp->getLeftChildNode()->getData())) {
+				t = tmp->getLeftChildNode()->getLeftChildNode();
+				while (t) {
+					if (t->getData() == element) break;
+					if (t->getData() < element) {
+						t->changeBf(-1);
+						t = t->getRightChildNode();
+					}
+					else {
+						t->changeBf(1);
+						t = t->getLeftChildNode();
+					}
+				}
+
 				if (ancestor == NULL) {
 					root = tmp->getLeftChildNode();
 					//root->setLeftChildNode(tmp->getLeftChildNode()->getRightChildNode());
@@ -252,20 +264,26 @@ void AVLTree<T>::insert(const T& element) {
 				int dl = recursiveGetDepth(tmp->getLeftChildNode()->getRightChildNode()->getLeftChildNode());
 				int dr = recursiveGetDepth(tmp->getLeftChildNode()->getRightChildNode()->getRightChildNode());
 				int cbf = dl - dr;
-				tmp->getLeftChildNode()->getRightChildNode()->changeBf(cbf);
 
 				if (ancestor == NULL) {
 					root = tmp->getLeftChildNode()->getRightChildNode();
-					tmp->getLeftChildNode()->setRightChildNode(NULL);
-
 					tmp->getLeftChildNode()->setRightChildNode(root->getLeftChildNode());
-					root->setLeftChildNode(NULL);
 					root->setLeftChildNode(tmp->getLeftChildNode());
-					tmp->setLeftChildNode(NULL);
 					tmp->setLeftChildNode(root->getRightChildNode());
-					root->setRightChildNode(NULL);
 					root->setRightChildNode(tmp);
-					root->getRightChildNode()->changeBf(0);
+
+					if (cbf == 0) {
+						root->getLeftChildNode()->changeBf(0);
+						root->getRightChildNode()->changeBf(0);
+					}
+					else if (cbf == 1) {
+						root->getLeftChildNode()->changeBf(0);
+						root->getRightChildNode()->changeBf(-1);
+					}
+					else if (cbf == -1) {
+						root->getLeftChildNode()->changeBf(1);
+						root->getRightChildNode()->changeBf(0);
+					}
 					return;
 				}
 				else if (tmp->getData() < ancestor->getData()) {
@@ -331,8 +349,20 @@ void AVLTree<T>::insert(const T& element) {
 		//RL&RR
 		else if (tmp->getBf() == -1) {
 			//RR
-			if ((insertPos->getData() > tmp->getData()) &&
-				(element > tmp->getRightChildNode()->getData())) {
+			if ((insertPos->getData() > tmp->getData()) && (element > tmp->getRightChildNode()->getData())) {
+				t = tmp->getRightChildNode()->getRightChildNode();
+				while (t) {
+					if (t->getData() == element) break;
+					if (t->getData() < element) {
+						t->changeBf(-1);
+						t = t->getRightChildNode();
+					}
+					else {
+						t->changeBf(1);
+						t = t->getLeftChildNode();
+					}
+				}
+
 				if (ancestor == NULL) {
 					root = tmp->getRightChildNode();
 					tmp->setRightChildNode(NULL);
@@ -363,14 +393,24 @@ void AVLTree<T>::insert(const T& element) {
 				int cbf = dl - dr;
 				if (ancestor == NULL) {
 					root = tmp->getRightChildNode()->getLeftChildNode();
-					tmp->getRightChildNode()->setLeftChildNode(NULL);
 					tmp->getRightChildNode()->setLeftChildNode(root->getRightChildNode());
 					root->setRightChildNode(tmp->getRightChildNode());
 					tmp->setRightChildNode(root->getLeftChildNode());
-					root->setRightChildNode(tmp->getRightChildNode());
-					tmp->setRightChildNode(root->getLeftChildNode());
 					root->setLeftChildNode(tmp);
-					root->getLeftChildNode()->changeBf(0);
+
+					
+					if (cbf == 0) {
+						root->getLeftChildNode()->changeBf(0);
+						root->getRightChildNode()->changeBf(0);
+					}
+					else if (cbf == 1) {
+						root->getLeftChildNode()->changeBf(0);
+						root->getRightChildNode()->changeBf(-1);
+					}
+					else if (cbf == -1) {
+						root->getLeftChildNode()->changeBf(1);
+						root->getRightChildNode()->changeBf(0);
+					}
 					return;
 				}
 				else if (tmp->getData() < ancestor->getData()) {
@@ -435,7 +475,6 @@ void AVLTree<T>::insert(const T& element) {
 
 template <class T>
 bool AVLTree<T>::isComplete() {
-	int nullNode = 0;
 	if (root == NULL) return true;
 	if (root->getLeftChildNode() == NULL && root->getRightChildNode() == NULL) return true;
 	queue<AVLTreeNode<T>*> nodeQueue;
@@ -443,16 +482,10 @@ bool AVLTree<T>::isComplete() {
 
 	while (nodeQueue.size() != 0) {
 		AVLTreeNode<T>* front = nodeQueue.front();
-		if (front == NULL) {
-			if (nullNode >= 1) return false;
-			else {
-				nullNode++;
-				nodeQueue.pop();
-				continue;
-			}
-		}
+		if (front == NULL && nodeQueue.size() != 1) return false;
+		else if (front->getLeftChildNode() == NULL && front->getRightChildNode() != NULL) return false;
 
-		if (front->getLeftChildNode() != NULL || front->getRightChildNode() != NULL) {
+		if (front->getLeftChildNode() != NULL) {
 			nodeQueue.push(front->getLeftChildNode());
 			nodeQueue.push(front->getRightChildNode());
 			nodeQueue.pop();
@@ -467,10 +500,11 @@ int main() {
 	int n;
 	AVLTree<int> avl;
 	cin >> n;
-	int a[11] = { 20,10,5,30,40,3,4,25,23,27,50 };
+	int a[6] = { 45,12,53,50,100,52 };
 	for (int i = 0; i < n; i++) {
 		int t;
 		t = a[i];
+//		cin >> t;
 		avl.insert(t);
 	}
 	avl.levelOrder();
