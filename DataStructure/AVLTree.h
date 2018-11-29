@@ -46,7 +46,7 @@ namespace dataStructure {
 	class AVLTree {
 	private:
 		AVLTreeNode<T>* root;
-		size_t num;
+		size_t nodenum;
 		size_t recursiveGetDepth(AVLTreeNode<T>* node);
 		void recursivePreOrder(AVLTreeNode<T>* node, void(*visit)(AVLTreeNode<T>*));
 		void recursiveInOrder(AVLTreeNode<T>* node, void(*visit)(AVLTreeNode<T>*));
@@ -59,7 +59,8 @@ namespace dataStructure {
 		void inOrder(void(*visit)(AVLTreeNode<T>*) = NULL);
 		void postOrder(void(*visit)(AVLTreeNode<T>*) = NULL);
 		void levelOrder(void(*visit)(AVLTreeNode<T>*) = NULL);
-		//		bool isComplete();
+		size_t size() { return nodenum; };
+		bool isComplete();
 
 		size_t depth();
 	};
@@ -67,7 +68,7 @@ namespace dataStructure {
 	template <class T>
 	AVLTree<T>::AVLTree() {
 		root = NULL;
-		num = 0;
+		nodenum = 0;
 	}
 
 	template <class T>
@@ -138,9 +139,14 @@ namespace dataStructure {
 		if (root == NULL) return;
 		queue<AVLTreeNode<T>*> prelist;
 		prelist.push(root);
+		size_t count = 0;
 		while (prelist.size() != 0) {
+			count++;
 			AVLTreeNode<T>* front = prelist.front();
-			if (visit == NULL) cout << front->getData();
+			if (visit == NULL) {
+				cout << front->getData();
+				if (count != nodenum) cout << ' ';
+			}
 			else visit(front);
 			prelist.pop();
 			if (front->getLeftChildNode() != NULL) prelist.push(front->getLeftChildNode());
@@ -170,6 +176,7 @@ namespace dataStructure {
 
 	template <class T>
 	void AVLTree<T>::insert(const T& element) {
+		nodenum++;
 		AVLTreeNode<T>* newNode = new AVLTreeNode<T>(element);
 		if (root == NULL) {
 			root = newNode;
@@ -430,5 +437,35 @@ namespace dataStructure {
 			}
 		}
 
+	}
+
+	template <class T>
+	bool AVLTree<T>::isComplete() {
+		int nullNode = 0;
+		if (root == NULL) return true;
+		if (root->getLeftChildNode() == NULL && root->getRightChildNode() == NULL) return true;
+		queue<AVLTreeNode<T>*> nodeQueue;
+		nodeQueue.push(root);
+
+		while (nodeQueue.size() != 0) {
+			AVLTreeNode<T>* front = nodeQueue.front();
+			if (front == NULL) {
+				if (nullNode >= 1) return false;
+				else {
+					nullNode++;
+					nodeQueue.pop();
+					continue;
+				}
+			}
+
+			if (front->getLeftChildNode() != NULL || front->getRightChildNode() != NULL) {
+				nodeQueue.push(front->getLeftChildNode());
+				nodeQueue.push(front->getRightChildNode());
+				nodeQueue.pop();
+			}
+			else nodeQueue.pop();
+		}
+
+		return true;
 	}
 }
