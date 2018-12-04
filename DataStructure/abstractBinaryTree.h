@@ -12,6 +12,7 @@ namespace dataStructure {
 		virtual abstractBinaryTreeNode<T>* setRight() = 0;
 		virtual T& getData() = 0;
 	};
+
 	template <class T>
 	class abstractBinaryTree {
 	private:
@@ -22,6 +23,11 @@ namespace dataStructure {
 		virtual void deleteNode(const T& theKey) = 0;
 		virtual size_t depth() = 0;
 		virtual size_t size() = 0;
-		s
+		virtual bool empty() = 0;
+		virtual void preOrder(void(*visit)(const T&)) = 0;
+		virtual void inOrder(void(*visit)(const T&)) = 0;
+		virtual void postOrder(void(*visit)(const T&)) = 0;
+		virtual void levelOrder(void(*visit)(const T&)) = 0;
+		virtual ~abstractBinaryTree() {};
 	};
 }
