@@ -28,7 +28,7 @@ namespace dataStructure {
 		AVLTreeNode<T>* rightChildNode;
 
 	public:
-//		friend class AVLTree<T>;
+		//		friend class AVLTree<T>;
 		AVLTreeNode(const T& dat) {
 			bf = 0;
 			leftChildNode = rightChildNode = NULL;
@@ -57,12 +57,12 @@ namespace dataStructure {
 		AVLTreeNode<T>* leftRotation(AVLTreeNode<T>* targetNode);
 		AVLTreeNode<T>* leftRightRotation(AVLTreeNode<T>* targetNode);
 		AVLTreeNode<T>* rightLeftRotation(AVLTreeNode<T>* targetNode);
-//		void recursiveDelete(AVLTreeNode<T>* node, const T& theKey);
-		//Will change the balance factor from the start postion to the insert position
-		void changeTheBalanceFactor(AVLTreeNode<T>* startPos, AVLTreeNode<T>* insertPos, const T& element);
+		//		void recursiveDelete(AVLTreeNode<T>* node, const T& theKey);
+				//Will change the balance factor from the start postion to the insert position
+		void changeTheBalanceFactor(AVLTreeNode<T>* startPos, AVLTreeNode<T>* endPos);
 		//Will return the child's ancestor node, if not, return NULL
 		AVLTreeNode<T>* findAncestor(AVLTreeNode<T>* child, AVLTreeNode<T>* start = NULL);
-		void balanceTree(AVLTreeNode<T>* start, AVLTreeNode<T>* node);
+		void balanceTree(AVLTreeNode<T>* node);
 	public:
 		AVLTree();
 		void insert(const T& element);
@@ -194,18 +194,15 @@ namespace dataStructure {
 	}
 
 	template <class T>
-	void AVLTree<T>::changeTheBalanceFactor(AVLTreeNode<T>* startPos, AVLTreeNode<T>* insertPos, const T& element) {
+	void AVLTree<T>::changeTheBalanceFactor(AVLTreeNode<T>* startPos, AVLTreeNode<T>* endPos) {
 		AVLTreeNode<T>* t = startPos;
 		while (t) {
-			if (element > t->getData()) {
-				t->changeBf(t->getBf() - 1);
-				t = t->getRight();
-			}
-			else if (element < t->getData()) {
-				t->changeBf(t->getBf() + 1);
-				t = t->getLeft();
-			}
-			else return;
+			int dl = recursiveGetDepth(t->getLeft());
+			int dr = recursiveGetDepth(t->getRight());
+			t->changeBf(dl - dr);
+			if (t == endPos) return;
+			if (t->getData() > endPos->getData()) t = t->getLeft();
+			else if (t->getData() < endPos->getData()) t = t->getRight();
 		}
 	}
 
@@ -213,7 +210,7 @@ namespace dataStructure {
 	AVLTreeNode<T>* AVLTree<T>::findAncestor(AVLTreeNode<T>* child, AVLTreeNode<T>* start) {
 		AVLTreeNode<T>* ancestor = NULL;
 		AVLTreeNode<T>* t;
-		if(start == NULL) t = root;
+		if (start == NULL) t = root;
 		else t = start;
 		while (t) {
 			if (t->getData() == child->getData()) break;
@@ -225,79 +222,231 @@ namespace dataStructure {
 		return ancestor;
 	}
 
-	template <class T> 
-	void AVLTree<T>::balanceTree(AVLTreeNode<T>* start, AVLTreeNode<T>* node) {
-		AVLTreeNode<T>* ancestor = findAncestor(node, start);
+	template <class T>
+	void AVLTree<T>::balanceTree(AVLTreeNode<T>* node) {
+		AVLTreeNode<T>* ancestor = findAncestor(node);
 
 		if (node->getBf() == 2) {
-			//LL
-			if (node->getLeft()->getBf() == 1) {
+			//R0
+			if (node->getLeft()->getBf() == 0) {
 				AVLTreeNode<T>* newTree = rightRotation(node);
-				if (ancestor->getLeft() == node) {
-					ancestor->setLeft(newTree);
+				if (ancestor == NULL) {
+					root = newTree;
+					root->changeBf(-1);
+					root->getRight()->changeBf(1);
 				}
-				else ancestor->setRight(newTree);
-				ancestor->changeBf(0);
+				else if (ancestor->getRight() == node) {
+					ancestor->setRight(newTree);
+					newTree->changeBf(-1);
+					newTree->getRight()->changeBf(1);
+				}
+				else if (ancestor->getLeft() == node) {
+					ancestor->setLeft(newTree);
+					newTree->changeBf(-1);
+					newTree->getLeft()->changeBf(1);
+				}
 			}
-			//LR
+			//R1
+			else if (node->getLeft()->getBf() == 1) {
+				if (ancestor == NULL) {
+					root = rightRotation(node);
+					root->changeBf(0);
+					root->getRight()->changeBf(0);
+				}
+				else if (ancestor->getRight() == node) {
+					ancestor->setRight(rightRotation(node));
+					ancestor->getRight()->changeBf(0);
+					ancestor->getRight()->changeBf(0);
+				}
+				else if (ancestor->getLeft() == node) {
+					ancestor->setLeft(rightRotation(node));
+					ancestor->getLeft()->changeBf(0);
+					ancestor->getLeft()->changeBf(0);
+				}
+				if (ancestor != NULL) {
+					changeTheBalanceFactor(root, ancestor);
+
+					AVLTreeNode<T>* balancePos = NULL;
+					AVLTreeNode<T>* t = root;
+					while (t) {
+						if (t->getBf() == 2 || t->getBf() == -2) {
+							balancePos = t;
+						}
+
+						if (t == ancestor) break;
+						if (t->getData() > ancestor->getData()) {
+							t = t->getLeft();
+						}
+						else if (t->getData() < ancestor->getData()) {
+							t = t->getRight();
+						}
+					}
+					//recursive to it's ancestor
+					if (balancePos != NULL) balanceTree(balancePos);
+				}
+			}
+			//R-1
 			else if (node->getLeft()->getBf() == -1) {
+				int dl = recursiveGetDepth(node->getLeft()->getRight()->getLeft());
+				int dr = recursiveGetDepth(node->getLeft()->getRight()->getRight());
+				int b = dl - dr;
 				AVLTreeNode<T>* newTree = leftRightRotation(node);
-				if (ancestor->getLeft() == node) {
+				newTree->changeBf(b);
+				if (ancestor == NULL) {
+					root = newTree;
+				}
+				else if (ancestor->getRight() == node) {
+					ancestor->setRight(newTree);
+				}
+				else if (ancestor->getLeft() == node) {
 					ancestor->setLeft(newTree);
 				}
-				else ancestor->setRight(newTree);
-
-				if (newTree->getBf() == 0) {
+				if (b == 0) {
 					newTree->getLeft()->changeBf(0);
 					newTree->getRight()->changeBf(0);
+					newTree->changeBf(0);
 				}
-				else if (newTree->getBf() == 1) {
+				else if (b == 1) {
 					newTree->getLeft()->changeBf(0);
 					newTree->getRight()->changeBf(-1);
+					newTree->changeBf(0);
 				}
-				else if (newTree->getBf() == -1) {
+				else if (b == -1) {
 					newTree->getLeft()->changeBf(1);
 					newTree->getRight()->changeBf(0);
+					newTree->changeBf(0);
+				}
+
+				if (ancestor != NULL) {
+					changeTheBalanceFactor(root, ancestor);
+					AVLTreeNode<T>* balancePos = NULL;
+					AVLTreeNode<T>* t = root;
+					while (t) {
+						if (t->getBf() == 2 || t->getBf() == -2) {
+							balancePos = t;
+						}
+
+						if (t == ancestor) break;
+						if (t->getData() > ancestor->getData()) {
+							t = t->getLeft();
+						}
+						else if (t->getData() < ancestor->getData()) {
+							t = t->getRight();
+						}
+					}
+					//recursive to it's ancestor
+					if (balancePos != NULL) balanceTree(balancePos);
 				}
 			}
 		}
 		else if (node->getBf() == -2) {
-			//RR
-			if(node->getRight()->getBf() == -1) {
+			//L0
+			if (node->getRight()->getBf() == 0) {
 				AVLTreeNode<T>* newTree = leftRotation(node);
-				if (ancestor->getLeft() == node) {
-					ancestor->setLeft(newTree);
+				if (ancestor == NULL) {
+					root = newTree;
+					newTree->changeBf(1);
+					newTree->getLeft()->changeBf(-1);
 				}
-				else ancestor->setRight(newTree);
-				ancestor->changeBf(0);
+				else if (ancestor->getLeft() == node) {
+					ancestor->setLeft(newTree);
+					newTree->changeBf(1);
+					newTree->getLeft()->changeBf(-1);
+				}
+				else if (ancestor->getRight() == node) {
+					ancestor->setRight(newTree);
+					newTree->changeBf(1);
+					newTree->getLeft()->changeBf(-1);
+				}
 			}
-			//RL
+			//L-1
+			else if (node->getRight()->getBf() == -1) {
+				AVLTreeNode<T>* newTree = leftRotation(node);
+				if (ancestor == NULL) {
+					root = newTree;
+					newTree->changeBf(0);
+					newTree->getLeft()->changeBf(0);
+				}
+				else if (ancestor->getLeft() == node) {
+					ancestor->setLeft(newTree);
+					newTree->changeBf(0);
+					newTree->getLeft()->changeBf(0);
+				}
+				else if (ancestor->getRight() == node) {
+					ancestor->setRight(newTree);
+					newTree->changeBf(0);
+					newTree->getLeft()->changeBf(0);
+				}
+				if (ancestor != NULL) {
+					changeTheBalanceFactor(root, ancestor);
+					AVLTreeNode<T>* balancePos = NULL;
+					AVLTreeNode<T>* t = root;
+					while (t) {
+						if (t->getBf() == 2 || t->getBf() == -2) {
+							balancePos = t;
+						}
+
+						if (t == ancestor) break;
+						if (t->getData() > ancestor->getData()) {
+							t = t->getLeft();
+						}
+						else if (t->getData() < ancestor->getData()) {
+							t = t->getRight();
+						}
+					}
+					//recursive to it's ancestor
+					if (balancePos != NULL) balanceTree(balancePos);
+				}
+			}
 			else if (node->getRight()->getBf() == 1) {
 				AVLTreeNode<T>* newTree = rightLeftRotation(node);
-				if (ancestor->getLeft() == node) {
+				int b = newTree->getBf();
+
+				if (ancestor == NULL) {
+					root = newTree;
+				}
+				else if (ancestor->getRight() == node) {
+					ancestor->setRight(newTree);
+				}
+				else if (ancestor->getLeft() == node) {
 					ancestor->setLeft(newTree);
 				}
-				else ancestor->setRight(newTree);
 
-				if (newTree->getBf() == 0) {
+				if (b == 0) {
 					newTree->getLeft()->changeBf(0);
 					newTree->getRight()->changeBf(0);
 				}
-				else if (newTree->getBf() == 1) {
+				else if (b == 1) {
 					newTree->getLeft()->changeBf(0);
 					newTree->getRight()->changeBf(-1);
 				}
-				else if (newTree->getBf() == -1) {
+				else if (b == -1) {
 					newTree->getLeft()->changeBf(1);
 					newTree->getRight()->changeBf(0);
 				}
+				newTree->changeBf(0);
+				if (ancestor != NULL) {
+					changeTheBalanceFactor(root, ancestor);
+					AVLTreeNode<T>* balancePos = NULL;
+					AVLTreeNode<T>* t = root;
+					while (t) {
+						if (t->getBf() == 2 || t->getBf() == -2) {
+							balancePos = t;
+						}
+
+						if (t == ancestor) break;
+						if (t->getData() > ancestor->getData()) {
+							t = t->getLeft();
+						}
+						else if (t->getData() < ancestor->getData()) {
+							t = t->getRight();
+						}
+					}
+					//recursive to it's ancestor
+					if (balancePos != NULL) balanceTree(balancePos);
+				}
 			}
 		}
-		
-		int dl = recursiveGetDepth(ancestor->getLeft());
-		int dr = recursiveGetDepth(ancestor->getRight());
-
-		ancestor->changeBf(dl - dr);
 	}
 
 
@@ -320,92 +469,91 @@ namespace dataStructure {
 	size_t AVLTree<T>::depth() {
 		return recursiveGetDepth(root);
 	}
-
+	
 	template <class T>
 	void AVLTree<T>::deleteNode(const T& theKey) {
-		if (root == NULL) return;
+		AVLTreeNode<T>* target = root;
+		AVLTreeNode<T>* pt = NULL;
 
-		AVLTreeNode<T>* target = root, *ancestor = NULL;
-		
-		while (target) {
+		//Find the key and it's parent
+		while (target != NULL) {
 			if (target->getData() == theKey) break;
-			ancestor = target;
-			if (target->getData() > theKey) target = target->getLeft();
-			else target = target->getRight();
+			pt = target;
+			if (target->getData() < theKey) target = target->getRight();
+			else target = target->getLeft();
 		}
+
+		//the key didn't exist
 		if (target == NULL) return;
 
-		if (target->getLeft() == NULL && target->getRight() == NULL) {
-			if (ancestor == NULL) {
-				delete root;
-				root = NULL;
-				return;
-			}
-			else {
-				if (ancestor->getLeft() == target) {
-					ancestor->setLeft(NULL);
-					delete target;
-					ancestor->changeBf(ancestor->getBf() - 1);
-				}
-				else {
-					ancestor->setRight(NULL);
-					delete target;
-					ancestor->changeBf(ancestor->getBf() + 1);
-				}
-			}
-		}
-		else if (target->getLeft() != NULL && target->getRight() == NULL) {
-			if (ancestor == NULL) {
-				root = target->getLeft();
-				delete target;
-			}
-			else {
-				if (ancestor->getLeft() == target) {
-					ancestor->setLeft(target->getLeft());
-					delete target;
-					ancestor->changeBf(ancestor->getBf() - 1);
-				}
-				else {
-					ancestor->setRight(target->getLeft());
-					delete target;
-					ancestor->changeBf(ancestor->getBf() + 1);
-				}
-			}
-		}
-		else if (target->getLeft() == NULL && target->getRight() != NULL) {
-			if (ancestor == NULL) {
-				root = target->getRight();
-				delete target;
-			}
-			else {
-				if (ancestor->getLeft() == target) {
-					ancestor->setLeft(target->getRight());
-					delete target;
-					ancestor->changeBf(ancestor->getBf() - 1);
-				}
-				else {
-					ancestor->setRight(ancestor->getRight());
-					delete target;
-					ancestor->changeBf(ancestor->getBf() + 1);
-				}
-			}
-		}
-		else {
+		//Target have two child
+		//Change to one child
+		if (target->getRight() != NULL && target->getLeft() != NULL) {
+			//The max node of the left tree
 			AVLTreeNode<T>* maxOfLeft = target->getLeft();
+			//It's ancestor
 			AVLTreeNode<T>* pOfMax = target;
-			while (maxOfLeft->getRight()) {
+			//Find the max
+			while (maxOfLeft->getRight() != NULL) {
 				pOfMax = maxOfLeft;
 				maxOfLeft = maxOfLeft->getRight();
 			}
 
-			target->setData(maxOfLeft->getData());
-			pOfMax->setRight(NULL);
-			pOfMax->changeBf(pOfMax->getBf() + 1);
-			
-			AVLTreeNode<T>* tempAncestor = pOfMax;
-			while (pOfMax != target) {
-				balanceTree(tempAncestor);
-				tempAncestor = findAncestor(tempAncestorm, target);
+			//Create a new node, use the maxOfLeft->data, and set is's left child and right child
+			AVLTreeNode<T>* newTree = new AVLTreeNode<T>(maxOfLeft->getData());
+			newTree->setLeft(target->getLeft());
+			newTree->setRight(target->getRight());
+
+			//set target's ancestor's child
+			if (pt == NULL) root = newTree;
+			else if (target == pt->getLeft()) pt->setLeft(newTree);
+			else pt->setRight(newTree);
+
+			//change to one child
+			if (pOfMax == target) pt = newTree;
+			else pt = pOfMax;
+
+			delete target;
+			target = maxOfLeft;
+		}
+
+		//Now, the target has no more than one child
+		AVLTreeNode<T>* c;
+		if (target->getLeft() != NULL) c = target->getLeft();
+		else c = target->getRight();
+		if (target == root) root = c;
+		else {
+			if (target == pt->getLeft()) pt->setLeft(c);
+			else pt->setRight(c);
+		}
+		nodenum--;
+		delete target;
+		if (pt != NULL) {
+			//And then, from target's ancestor(pt) to the root, accroding to the ancestor's bf to balance it
+			AVLTreeNode<T>* temp = pt;
+			int dl = recursiveGetDepth(pt->getLeft());
+			int dr = recursiveGetDepth(pt->getRight());
+			pt->changeBf(dl - dr);
+			if (pt->getBf() == 1 || pt->getBf() == -1) {
+				return;
+			}
+			else if (pt->getBf() == 0) {
+				changeTheBalanceFactor(root, pt);
+				AVLTreeNode<T>* t = root;
+				AVLTreeNode<T>* tmp = NULL;
+				while (true) {
+					if (t == pt) break;
+					if (t->getBf() == 2 || t->getBf() == -2) {
+						tmp = t;
+					}
+					if (t->getData() > pt->getData()) t = t->getLeft();
+					else if (t->getData() < pt->getData()) t = t->getRight();
+				}
+				if(tmp != NULL) balanceTree(tmp);
+			}
+			else if (pt->getBf() == 2 || pt->getBf() == -2) {
+				changeTheBalanceFactor(root, pt);
+				balanceTree(pt);
 			}
 		}
 	}
@@ -445,12 +593,12 @@ namespace dataStructure {
 		//Not find the bf, after inserting will not change the balance factor(bf)
 		if (tmp == NULL) {
 			//After insertion, change the banance factor from the root node to the insertion node
-			changeTheBalanceFactor(root, insertPos, element);
+			changeTheBalanceFactor(root, insertPos);
 			return;
 		}
 		//Find the last node which isn't balanced, and it's balance factor is 1
 		//That means this sutiuation is the "LL" or "LR"
-		else if (tmp->getBf() == 1) {		
+		else if (tmp->getBf() == 1) {
 			//LL
 			if (element < tmp->getLeft()->getData() && insertPos->getData() < tmp->getData()) {
 				//Firstly, find the tmp's ancestor node
@@ -463,13 +611,13 @@ namespace dataStructure {
 				//Then, change the tmp node's balance factor to ZERO
 				tmp->changeBf(0);
 				//Lastly, change the balance factor from the tmp's left child to the insert node
-				changeTheBalanceFactor(newTree->getLeft(), insertPos, element);
+				changeTheBalanceFactor(newTree->getLeft(), insertPos);
 				return;
 			}
 			//LR
 			else if (element > tmp->getLeft()->getData() && insertPos->getData() < tmp->getData()) {
 				//Solve the new node's balance factor
-				changeTheBalanceFactor(tmp->getLeft()->getRight(), insertPos, element);
+				changeTheBalanceFactor(tmp->getLeft()->getRight(), insertPos);
 				//Firstly, find the tmp's ancestor node
 				AVLTreeNode<T>* ancestor = findAncestor(tmp);
 				//Secondly, rorate to left and to right, and set the ancestor' new child
@@ -490,11 +638,12 @@ namespace dataStructure {
 					newTree->getLeft()->changeBf(1);
 					newTree->getRight()->changeBf(0);
 				}
+				newTree->changeBf(0);
 				return;
 			}
 			//Don't change the balance
 			else {
-				changeTheBalanceFactor(tmp, insertPos, element);
+				changeTheBalanceFactor(tmp, insertPos);
 				return;
 			}
 		}
@@ -513,13 +662,13 @@ namespace dataStructure {
 				//Then, change the tmp node's balance factor to ZERO
 				tmp->changeBf(0);
 				//Lastly, change the balance factor from the tmp's right child to the insert node
-				changeTheBalanceFactor(newTree->getRight(), insertPos, element);
+				changeTheBalanceFactor(newTree->getRight(), insertPos);
 				return;
 			}
 			//RL
 			else if (element < tmp->getRight()->getData() && insertPos->getData() > tmp->getData()) {
 				//Change the balance factor
-				changeTheBalanceFactor(tmp->getRight()->getLeft(), insertPos, element);
+				changeTheBalanceFactor(tmp->getRight()->getLeft(), insertPos);
 				//Firstly, find the tmp's ancestor node
 				AVLTreeNode<T>* ancestor = findAncestor(tmp);
 				//Secondly, rorate to right and to left, and set the ancestor' new child
@@ -540,11 +689,12 @@ namespace dataStructure {
 					newTree->getLeft()->changeBf(1);
 					newTree->getRight()->changeBf(0);
 				}
+				newTree->changeBf(0);
 				return;
 			}
 			//Don't change the balance
 			else {
-				changeTheBalanceFactor(tmp, insertPos, element);
+				changeTheBalanceFactor(tmp, insertPos);
 				return;
 			}
 		}
