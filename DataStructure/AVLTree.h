@@ -57,8 +57,7 @@ namespace dataStructure {
 		AVLTreeNode<T>* leftRotation(AVLTreeNode<T>* targetNode);
 		AVLTreeNode<T>* leftRightRotation(AVLTreeNode<T>* targetNode);
 		AVLTreeNode<T>* rightLeftRotation(AVLTreeNode<T>* targetNode);
-		//		void recursiveDelete(AVLTreeNode<T>* node, const T& theKey);
-				//Will change the balance factor from the start postion to the insert position
+		//Will change the balance factor from the start postion to the insert position
 		void changeTheBalanceFactor(AVLTreeNode<T>* startPos, AVLTreeNode<T>* endPos);
 		//Will return the child's ancestor node, if not, return NULL
 		AVLTreeNode<T>* findAncestor(AVLTreeNode<T>* child, AVLTreeNode<T>* start = NULL);

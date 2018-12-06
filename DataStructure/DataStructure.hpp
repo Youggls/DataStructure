@@ -5,6 +5,7 @@
 #include "arraryList.h"
 #include "AVLTree.h"
 #include "generateHelper.h"
+#include "BTree.h"
 //namespace dataStructure {
 	//template <class T>
 	//class binaryTree;

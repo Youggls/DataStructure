@@ -41,5 +41,11 @@
     <ClInclude Include="AVLTree.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="BTree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

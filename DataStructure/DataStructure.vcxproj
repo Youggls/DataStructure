@@ -126,8 +126,12 @@
     <ClInclude Include="AVLTree.h" />
     <ClInclude Include="BinarySearchTree.h" />
     <ClInclude Include="binaryTree.h" />
+    <ClInclude Include="BTree.h" />
     <ClInclude Include="DataStructure.hpp" />
     <ClInclude Include="MaxHeap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
