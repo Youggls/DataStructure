@@ -703,23 +703,20 @@ namespace dataStructure {
 	template <class T>
 	bool AVLTree<T>::isComplete() {
 		if (root == NULL) return true;
-		if (root->getLeft() == NULL && root->getRight() == NULL) return true;
+		AVLTreeNode<T>* front = NULL;
 		queue<AVLTreeNode<T>*> nodeQueue;
 		nodeQueue.push(root);
-
-		while (nodeQueue.size() != 0) {
-			AVLTreeNode<T>* front = nodeQueue.front();
-			if (front == NULL && nodeQueue.size() != 1) return false;
-			else if (front->getLeft() == NULL && front->getRight() != NULL) return false;
-
-			if (front->getLeft() != NULL) {
-				nodeQueue.push(front->getLeft());
-				nodeQueue.push(front->getRight());
-				nodeQueue.pop();
-			}
-			else nodeQueue.pop();
+		while (front = nodeQueue.front()) {
+			nodeQueue.push(front->getLeft());
+			nodeQueue.push(front->getRight());
+			nodeQueue.pop();
 		}
 
+		while (!nodeQueue.empty()) {
+			front = nodeQueue.front();
+			if (front != NULL) return false;
+			nodeQueue.pop();
+		}
 		return true;
 	}
 }
