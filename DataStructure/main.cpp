@@ -6,13 +6,35 @@ using std::cout;
 using std::endl;
 using std::queue;
 using std::vector;
-using dataStructure::AVLTree;
-using dataStructure::binarySearchTree;
 using dataStructure::BTree;
 
 int main() {
-	BTree<int> bt;
-	vector<AVLTree<int>> v;
+	//AVLTree<int> avl;
+	//int n;
+	//cin >> n;
+	//int* a = dataStructure::generateArray(n, 0);
+	//LARGE_INTEGER t1, t2, tc;
+	//QueryPerformanceFrequency(&tc);
+	//QueryPerformanceCounter(&t1);
+	//for (int i = 0; i < n; i++) {
+	//	avl.insert(a[i]);
+	//}
+	//QueryPerformanceCounter(&t2);
+	//cout << "AVL insert time:" << (t2.QuadPart - t1.QuadPart)*1.0 / tc.QuadPart << 's' << endl;
+	//QueryPerformanceFrequency(&tc);
+	//QueryPerformanceCounter(&t1);
+	//for (int i = 0; i < n; i++) {
+	//	avl.deleteNode(a[i]);
+	//}
+	//QueryPerformanceCounter(&t2);
+	//cout << "AVL delete time:" << (t2.QuadPart - t1.QuadPart)*1.0 / tc.QuadPart << 's' << endl;
+	BTree<int> bt(4);
+	int n;
+	cin >> n;
+	int* a = dataStructure::generateArray(n + 1, 0);
+	for (int i = 1; i < n + 1; i++) {
+		bt.insert(a[i]);
+	}
 	system("pause");
 	return 0;
 }
