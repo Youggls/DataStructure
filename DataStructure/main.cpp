@@ -31,8 +31,8 @@ int main() {
 	BTree<int> bt(4);
 	int n;
 	cin >> n;
-	int* a = dataStructure::generateArray(n + 1, 0);
-	for (int i = 1; i < n + 1; i++) {
+	int* a = dataStructure::generateArray(n, 0);
+	for (int i = 0; i < n; i++) {
 		bt.insert(a[i]);
 	}
 	system("pause");

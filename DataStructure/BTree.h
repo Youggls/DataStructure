@@ -26,8 +26,9 @@ namespace dataStructure {
 	public:
 		BTreeElement(const T& dat, bool is = false) { data = dat; child = NULL; isNull = is; };
 		BTreeElement(bool is = false) { child = NULL; isNull = is; };
-		bool isNULL() { return isNULL; };
-		bool setTrue() { isNull = true; };
+		bool isNULL() { return isNull; };
+		void setTrue() { isNull = true; };
+		void setFalse() { isNull = false; };
 		void setData(const T& dat) { data = dat; };
 		void setChild(BTreeNode<T>* c) { child = c; };
 		T& getData() { return data; };
@@ -44,6 +45,9 @@ namespace dataStructure {
 		int find(const T& theKey);
 		BTreeNode<T>* split(int order, BTreeNode<T>* ancestor);
 		void insert(const T& theKey);
+		void insert(BTreeElement<T>* theKey);
+		void deleteSingle(int pos);
+		void changeNum(int n) { num -= n; };
 		T& getData(int pos) { BTreeElement<T>* t = data.at(pos); return t->getData(); };
 		BTreeElement<T>* getElement(int pos) { return data.at(pos); };
 		int size() { return num; };
@@ -54,7 +58,7 @@ namespace dataStructure {
 		//预留两个多余的指针，一个为溢出准备，另外一个作为一个空元素作为多出来的那个指针指向孩子节点
 		data.resize(order + 1);
 		for (int i = 0; i < order + 1; i++) {
-			data[i] = new BTreeElement<T>(false);
+			data[i] = new BTreeElement<T>(true);
 		}
 		num = 0;
 	}
@@ -74,8 +78,8 @@ namespace dataStructure {
 			else if (t->getData() > theKey && nxt->getData() > theKey) return i;
 			//Larger than the last one
 			else if (i == num - 2 && theKey > nxt->getData()) return i + 2;
-			else if (i == num - 2 && theKey == nxt->getData()) return i + 1
-				;			//Less than the first one
+			else if (i == num - 2 && theKey == nxt->getData()) return i + 1;
+			//Less than the first one
 			else if (i == 0 && theKey < t->getData()) return i;
 		}
 	}
@@ -117,6 +121,7 @@ namespace dataStructure {
 
 	template <class T>
 	void BTreeNode<T>::insert(const T& theKey) {
+		//has no element
 		if (this->size() == 0) {
 			BTreeElement<T>* newElement = new BTreeElement<T>(theKey);
 			BTreeElement<T>* t = this->data[0];
@@ -125,8 +130,10 @@ namespace dataStructure {
 			num++;
 			return;
 		}
+		//has a same element
 		int pos = find(theKey);
 		if (getData(pos) == theKey) return;
+
 		BTreeElement<T>* newElement = new BTreeElement<T>(theKey);
 		BTreeElement<T>* pre = newElement;
 		BTreeElement<T>* nxt;
@@ -142,14 +149,62 @@ namespace dataStructure {
 	}
 
 	template <class T>
+	void BTreeNode<T>::insert(BTreeElement<T>* theKey) {
+		//has no element
+		if (this->size() == 0) {
+			BTreeElement<T>* newElement = theKey;
+			BTreeElement<T>* t = this->data[0];
+			this->data[0] = newElement;
+			this->data[1] = t;
+			num++;
+			return;
+		}
+		//has a same element
+		int pos = find(theKey);
+		if (getData(pos) == theKey) return;
+
+		BTreeElement<T>* newElement = theKey;
+		BTreeElement<T>* pre = newElement;
+		BTreeElement<T>* nxt;
+		BTreeElement<T>* t = this->data[num];
+		for (int i = pos + 1; i < num; i++) {
+			nxt = data.at(i);
+			data.at(i) = pre;
+			pre = nxt;
+		}
+		data.at(num) = pre;
+		data.at(num + 1) = t;
+		num++;
+	}
+
+	template <class T>
+	void BTreeNode<T>::deleteSingle(int pos) {
+		BTreeElement<T>* t1 = this->data.at(num - 1);
+		BTreeElement<T>* t2;
+		for (int i = num - 1; i > pos + 1; i--) {
+			t1 = t2;
+			t2 = this->data.at(i - 1);
+			this->data.at(i - 1) = t1;
+		}
+		this->data.at(pos) = t2;
+
+		num--;
+		t1 = this->data.at(num - 1);
+		t1->setFalse();
+	}
+
+	template <class T>
 	class BTree {
 	private:
 		BTreeNode<T>* root;
 		int order;
+		int min;
 		void balanceTree(BTreeNode<T>* node);
+		void merge(BTreeNode<T>* left, BTreeNode<T>* right, BTreeNode<T>* ancestor);
+		void shiftUpDown(BTreeNode<T>* from, BTreeNode<T>* to, BTreeNode<T>* ancestor, int pos1, int pos2);
 		BTreeNode<T>* findAncestor(BTreeNode<T>* temp);
 	public:
-		BTree(int o) { order = o; root = NULL; };
+		BTree(int o) { order = o; root = NULL; min = int(o / 2 + (o / 2.0 - o / 2) * 2); };
 		void insert(const T& theKey);
 		void deleteElement(const T& theKey);
 	};
@@ -186,6 +241,29 @@ namespace dataStructure {
 	}
 
 	template <class T>
+	void BTree<T>::merge(BTreeNode<T>* left, BTreeNode<T>* right, BTreeNode<T>* ancestor) {
+		if (ancestor == NULL) return;
+
+		int pos = ancestor->find(right->getData(0));
+		BTreeNode<T>* newNode = new BTreeNode<T>(order);
+
+
+
+		delete left;
+		delete right;
+		ancestor->changeNum(-1);
+		ancestor->deleteSingle(pos);
+		
+		BTreeElement<T>* t = ancestor->getElement(pos);
+		t->setChild(newNode);
+	}
+
+	template <class T>
+	void BTree<T>::shiftUpDown(BTreeNode<T>* from, BTreeNode<T>* to, BTreeNode<T>* ancestor, int pos1, int pos2) {
+
+	}
+
+	template <class T>
 	void BTree<T>::insert(const T& theKey) {
 		if (root == NULL) {
 			BTreeNode<T>* newTree = new BTreeNode<T>(order);
@@ -207,5 +285,10 @@ namespace dataStructure {
 
 		target->insert(theKey);
 		balanceTree(target);
+	}
+
+	template <class T>
+	void BTree<T>::deleteElement(const T& theKey) {
+
 	}
 }
