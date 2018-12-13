@@ -6,6 +6,13 @@
 using std::vector;
 #endif // !VECTOR
 
+#ifndef QUEUE
+#define QUEUE
+#include <queue>
+using std::queue;
+#endif // !QUEUE
+
+
 #ifndef VCRUNTIME_H
 #define VCRUNTIME_H
 #include <vcruntime.h>
