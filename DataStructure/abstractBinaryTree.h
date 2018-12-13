@@ -1,23 +1,18 @@
 namespace dataStructure {
 	template <class T>
 	class abstractBinaryTreeNode {
-	private:
-		T data;
-		abstractBinaryTreeNode<T>* leftChildNode;
-		abstractBinaryTreeNode<T>* rightChildNode;
 	public:
-		virtual void getLeft() = 0;
-		virtual void getRight() = 0;
-		virtual abstractBinaryTreeNode<T>* setLeft() = 0;
-		virtual abstractBinaryTreeNode<T>* setRight() = 0;
+		virtual abstractBinaryTreeNode<T>* getLeft() = 0;
+		virtual abstractBinaryTreeNode<T>* getRight() = 0;
+		virtual abstractBinaryTreeNode<T>* getAncestor() = 0;
+		virtual void setLeft(abstractBinaryTreeNode<T>* left) = 0;
+		virtual void setRight(abstractBinaryTreeNode<T>* right) = 0;
+		virtual void setAncestor(abstractBinaryTreeNode<T>* ancestor) = 0;
 		virtual T& getData() = 0;
 	};
 
 	template <class T>
 	class abstractBinaryTree {
-	private:
-		abstractBinaryTreeNode<T>* root;
-		size_t nodeSize;
 	public:
 		virtual void insert(const T& element) = 0;
 		virtual void deleteNode(const T& theKey) = 0;
