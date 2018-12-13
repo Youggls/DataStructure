@@ -6,35 +6,17 @@ using std::vector;
 #endif // !vector
 
 namespace dataStructure {
-	class graph {
+	class edge {
 	private:
-		vector<vector<int>> adjMatrix;
-		int edge;
-		int node;
-		bool isReached(vector<int> reach, int n);
+		int u;
+		int v;
+		int len;
 	public:
-		graph(int n);
-		int prim();
+		edge(int n1, int n2, int l) { u = n1; v = n2; len = l; };
+		edge(const edge& e) { u = e.u; v = e.v; len = e.len; };
+		edge() { u = -1; v = -1; len = INT_MAX; };
+		int& getU() { return u; };
+		int& getV() { return v; };
+		int& getlen() { return len; };
 	};
-
-	graph::graph(int n) {
-		adjMatrix.resize(n);
-		for (int i = 0; i < n; i++) adjMatrix.at(i).resize(n);
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				adjMatrix.at(i).at(j) = 0;
-			}
-		}
-	}
-
-	int graph::prim() {
-
-	}
-
-	bool graph::isReached(vector<int> reach, int n) {
-		for (int i = 0; i < reach.size(); i++) {
-			if (n == reach.at(i)) return true;
-		}
-		return false;
-	}
 }
