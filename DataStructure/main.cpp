@@ -13,7 +13,10 @@ int main() {
 	BTree<int> bt(4);
 	for (int i = 0; i < 10; i++) 
 		bt.insert(i);
-	for (int i = 0; i < 10; i++) bt.deleteElement(i);
+	int a[] = { 4,5,7,9,2,3,1,0,8,6 };
+	for (int i = 0; i < 10; i++) {
+		bt.deleteElement(a[i]);
+	}
 	system("pause");
 	return 0;
 }
