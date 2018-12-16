@@ -130,6 +130,7 @@
     <ClInclude Include="DataStructure.hpp" />
     <ClInclude Include="graph.h" />
     <ClInclude Include="MaxHeap.h" />
+    <ClInclude Include="RedBlackTree.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
