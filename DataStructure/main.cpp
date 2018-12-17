@@ -6,17 +6,16 @@ using std::endl;
 using std::vector;
 using std::string;
 using std::stack;
-using dataStructure::BTree;
-
+using dataStructure::sort::rankSort;
+using dataStructure::generateArray;
 
 int main() {
-	BTree<int> bt(4);
-	for (int i = 0; i < 10; i++) 
-		bt.insert(i);
-	int a[] = { 4,5,7,9,2,3,1,0,8,6 };
-	for (int i = 0; i < 10; i++) {
-		bt.deleteElement(a[i]);
-	}
+	//int* a = generateArray(10);
+	//a = rankSort<int>(a, 10);
+	int a[] = { 26,33,35,29,19,12,22 };
+	rankSort<int>(a, 7);
+	for (int i = 0; i < 7; i++) cout << a[i] << ' ';
+	cout << endl;
 	system("pause");
 	return 0;
 }
