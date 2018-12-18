@@ -51,8 +51,9 @@ namespace dataStructure {
 	template <class T>
 	RBTreeNode<T>* RBTree<T>::leftRotation(RBTreeNode<T>* node) {
 		RBTreeNode<T>* newTree = node->getRight();
-		
-		
+		node->setRight(newTree->getLeft());
+		newTree->setLeft(node);
+		newTree->setColor(red);
 
 		return newTree;
 	}
@@ -60,7 +61,34 @@ namespace dataStructure {
 	template <class T>
 	RBTreeNode<T>* RBTree<T>::rightRotation(RBTreeNode<T>* node) {
 		RBTreeNode<T>* newTree = node->getLeft();
+		node->setLeft(newTree->getRight());
+		newTree->setRight(node);
+		newTree->setColor(black);
 
+		return newTree;
+	}
+
+	template <class T>
+	RBTreeNode<T>* RBTree<T>::leftRightRotation(RBTreeNode<T>* node) {
+		RBTreeNode<T>* newTree = leftRotation(node->getLeft());
+		node->setLeft(newTree);
+		newTree = rightRotation(node);
+		newTree->setColor(balck);
+		newTree->getLeft()->setColor(red);
+		newTree->getRight()->setColor(red);
+
+		return newTree;
+	}
+
+	template <class T>
+	RBTreeNode<T>* RBTree<T>::rightLeftRotation(RBTreeNode<T>* node) {
+		RBTreeNode<T>* newTree = rightRotation(node->getRight());
+		node->setRight(newTree);
+		newTree = leftRotation(node);
+
+		newTree->setColor(black);
+		newTree->getLeft()->setColor(red);
+		newTree->getRight()->setColor(red);
 
 		return newTree;
 	}
@@ -108,12 +136,13 @@ namespace dataStructure {
 		if (root = NULL) {
 			root = newNode;
 			root->setColor(black);
+			newNode.setAncestor(NULL);
 			return;
 		}
 
 		newNode->setColor(red);
 		RBTreeNode<T>* target = find(theKey);
-
+		//The insert T has existed!
 		if (target->getData() == theKey) return;
 
 		RBTreeNode<T>* ancestor = target->getAncestor();
@@ -121,9 +150,40 @@ namespace dataStructure {
 		if (target->getColor() == black) {
 			if (theKey < target->getColor()) target->setLeft(newNode);
 			else target->setRight(newNode);
+			newNode->setAncestor(target);
 		}
 		else {
 			//If target is red, target must have a black ancestor
+			//Target is the left child of it's ancestor
+
+			RBTreeNode<T>* tempNewNode = NULL;
+			RBTreeNode<T>* targetGrandAncestor = target->getAncestor()->getAncestor();
+			
+
+			if (target->getAncestor()->getLeft() == target) {
+				//The insertPos is at the left(just like AVL LL)
+				if (theKey < target->getData()) {
+					tempNewNode = leftRotation(target->getAncestor());
+					if (targetGrandAncestor == NULL) root = tempNewNode;
+					else {
+						if (tempNewNode->getData() < targetGrandAncestor->getData()) targetGrandAncestor->setLeft(tempNewNode);
+						else targetGrandAncestor->setRight(tempNewNode);
+					}
+				}
+				//The new node is at the right of the insertpos just like AVL LR
+				else if (theKey > target->getData()) {
+					tempNewNode = rightLeftRotation(target->getAncestor());
+					if (targetGrandAncestor == NULL) root = tempNewNode;
+					else {
+						if (tempNewNode->getData() < targetGrandAncestor->getData()) targetGrandAncestor->setLeft(tempNewNode);
+						else targetGrandAncestor->setRight(tempNewNode);
+					}
+				}
+			}
+
+			else if (target->getAncestor.getRight() == taregt) {
+
+			}
 
 		}
 	}

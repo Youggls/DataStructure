@@ -10,3 +10,4 @@
 #include "graph.h"
 #include "RedBlackTree.h"
 #include "RankSort.h"
+#include "QuickSort.h"
