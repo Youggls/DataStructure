@@ -19,7 +19,9 @@ namespace dataStructure {
 
 		void setLeft(RBTreeNode<T>* l) { left = l; };
 		void setRight(RBTreeNode<T>* r) { right = r; };
-		void setAncestor(RBTreeNode<T>* a) { ancestor = a; };
+		void setAncestor(RBTreeNode<T>* a) { 
+			ancestor = a;
+		};
 
 		void setColor(nodeColor c) { color = c; };
 		nodeColor getColor() { return color; };
@@ -54,9 +56,11 @@ namespace dataStructure {
 	RBTreeNode<T>* RBTree<T>::leftRotation(RBTreeNode<T>* node) {
 		RBTreeNode<T>* newTree = node->getRight();
 		node->setRight(newTree->getLeft());
+		if (node->getRight()) node->getRight()->setAncestor(node);
 		newTree->setLeft(node);
 		node->setAncestor(newTree);
-		newTree->setColor(red);
+		newTree->setColor(black);
+		node->setColor(red);
 
 		return newTree;
 	}
@@ -65,10 +69,12 @@ namespace dataStructure {
 	RBTreeNode<T>* RBTree<T>::rightRotation(RBTreeNode<T>* node) {
 		RBTreeNode<T>* newTree = node->getLeft();
 		node->setLeft(newTree->getRight());
+		if (node->getLeft()) node->getLeft()->setAncestor(node);
 
 		newTree->setRight(node);
 		node->setAncestor(newTree);
 		newTree->setColor(black);
+		node->setColor(red);
 
 		return newTree;
 	}
@@ -107,7 +113,7 @@ namespace dataStructure {
 		node->setColor(c);
 		brother->setColor(c);
 		if (ancestor != root) {
-			ancestor->setColor(c);
+			ancestor->setColor(red);
 			RBTreeNode<T>* grandAncestor = ancestor->getAncestor();
 			RBTreeNode<T>* grandAncestorBrother = NULL;
 
@@ -127,7 +133,7 @@ namespace dataStructure {
 				RBTreeNode<T>* newNode = NULL;
 				RBTreeNode<T>* temp = greatGrandAncestor->getAncestor();
 				if (greatGrandAncestor->getLeft() == grandAncestor) grandAncestorBrother = greatGrandAncestor->getRight();
-				else grandAncestorBrother = greatGrandAncestor->getRight();
+				else grandAncestorBrother = greatGrandAncestor->getLeft();
 				if (grandAncestorBrother == NULL || grandAncestorBrother->getColor() == black) {
 					if (greatGrandAncestor->getLeft() == grandAncestor) {
 						if (grandAncestor->getLeft() == ancestor) {
@@ -147,6 +153,8 @@ namespace dataStructure {
 					}
 
 					if (temp != NULL) {
+						T t = temp->getData();
+						t = t;
 						if (temp->getData() > newNode->getData()) {
 							temp->setLeft(newNode);
 							newNode->setAncestor(temp);
@@ -196,12 +204,12 @@ namespace dataStructure {
 	bool RBTree<T>::isExist(const T& theKey) {
 		if (root == NULL) return false;
 
-		RBTreeNode<T> t = root;
+		RBTreeNode<T>* t = root;
 		while (t) {
-			if (t.getData() == theKey) return true;
+			if (t->getData() == theKey) return true;
 			
-			if (theKey < t.getData()) t = t.getLeft();
-			else if (theKey > t.getData()) t = t.getRight();
+			if (theKey < t->getData()) t = t->getLeft();
+			else if (theKey > t->getData()) t = t->getRight();
 		}
 
 		return false;
@@ -224,7 +232,7 @@ namespace dataStructure {
 		if (target->getData() == theKey) return;
 
 		//Whatever the sitiuation is, insert firstly
-		if (theKey < target->getColor()) target->setLeft(newNode);
+		if (theKey < target->getData()) target->setLeft(newNode);
 		else target->setRight(newNode);
 		newNode->setAncestor(target);
 
@@ -256,7 +264,8 @@ namespace dataStructure {
 					//The insert position is at the right of the target(just like AVL RR)
 					if (theKey > target->getData()) tempNewNode = leftRotation(target->getAncestor());
 						//The insert position is at the left of the target(just like AVL RL)
-					else if (theKey < target->getData()) tempNewNode = rightLeftRotation(target->getAncestor());
+					else if (theKey < target->getData()) 
+						tempNewNode = rightLeftRotation(target->getAncestor());
 				}
 
 				//Set the target's grandancestor's child
