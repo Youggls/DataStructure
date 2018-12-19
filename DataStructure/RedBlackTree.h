@@ -274,7 +274,30 @@ namespace dataStructure {
 			}
 		}
 		else if (brother->getColor() == red) {
+			RBTreeNode<T>* newTree = NULL;
+			RBTreeNode<T>* grandAncestor = ancestor->getAncestor();
+			RBTreeNode<T>* brotherRC = brother->getRight();
 
+			if (brother == ancestor->getLeft()) {
+				//Rr0
+				//These conditions restric that the brotherRC don't have red child
+				if ((brotherRC == NULL) ||
+					(brotherRC && brotherRC->getRight() == NULL && brotherRC->getLeft() == NULL)
+					((brotherRC->getLeft() && brotherRC->getLeft()->getColor() == red) && (brotherRC->getRight() && brotherRC->getRight()->getColor() == red)) ||
+					((brotherRC->getLeft() && brotherRC->getLeft() == red) && brotherRC->getRight() == NULL) ||
+					((brotherRC->getRight() && brotherRC->getRight() == red) && brotherRC->getLeft() == NULL)) {
+					newTree = rightRotation(ancestor);
+					newTree->setColor(black);
+				}
+				//Rr1
+				else if (((brotherRC->getLeft() && brotherRC->getLeft()->getColor() == red) &&
+					(brotherRC->getRight() == NULL || (brotherRC->getRight() && brother->getRight.getColor() == black)) ||
+
+					((brotherRC->getRight() && brotherRC->getRight() == red) &&
+					(brotherRC->getLeft() == NULL || (brotherRC->getLeft() && brother->getLeft()->getColor() == black))) {
+
+				}
+			}
 		}
 
 	}
