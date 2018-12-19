@@ -42,6 +42,7 @@ namespace dataStructure {
 		RBTreeNode<T>* rightLeftRotation(RBTreeNode<T>* node);
 
 		void rePaintColor(RBTreeNode<T>* node, RBTreeNode<T>* brother, nodeColor c = black);
+		void recursiveBalance(RBTreeNode<T>* node, RBTreeNode<T>* ancestor);
 	public:
 		RBTree() { root = NULL; nodeNum = 0; };
 
@@ -180,6 +181,105 @@ namespace dataStructure {
 	}
 
 	template <class T>
+	void RBTree<T>::recursiveBalance(RBTreeNode<T>* node, RBTreeNode<T>* ancestor) {
+		RBTreeNode<T>* brother = NULL;
+		if (ancestor->getLeft() == node) brother = ancestor->getRight();
+		else brother = ancestor->getLeft();
+
+		if (brother->getColor() == black) {
+			bool flag1 = ((brother->getLeft() != NULL) && (brother->getLeft()->getColor() == red));
+			bool flag2 = ((brother->getRight() != NULL) && (brother->getRight()->getColor() == red));
+			//Rb0 or Lb0
+			if ((brother->getLeft() == NULL && brother->getRight() == NULL) ||
+				(brother->getLeft()->getColor() == black && brother->getRight()->getColor() == black)) {
+				bool temp = true;
+				if (ancestor->getColor() == red) {
+					ancestor->setColor(black);
+					temp = false;
+				}
+
+				brother->setColor(red);
+				if (ancestor == root) return;
+				else if (temp) {
+					node = ancestor;
+					ancestor = node->getAncestor();
+					recursiveBalance(node, ancestor);
+				}
+				return;
+			}
+			//Rb1 or Lb1
+			else if ((flag1 || flag2) && !(flag1 && flag2)) {
+				RBTreeNode<T>* grandAncestor = ancestor->getAncestor();
+				RBTreeNode<T>* newTree = NULL;
+				nodeColor temp = ancestor->getColor();
+
+				if (brother == ancestor->getLeft()) {
+
+					if (brother->getLeft() && brother->getLeft()->getColor() == red) {
+						newTree->getRight()->setColor(black);
+					}
+
+					else if (brother->getRight() && brother->getRight()->getColor() == red) {
+						newTree = leftRightRotation(ancestor);
+						newTree->getRight()->setColor(black);
+						newTree->getLeft()->setColor(black);
+					}
+				}
+
+				else if (brother == ancestor->getRight()) {
+
+					if (brother->getLeft() && brother->getLeft()->getColor() == red) {
+						newTree = rightLeftRotation(ancestor);
+						newTree->getRight()->setColor(black);
+						newTree->getLeft()->setColor(black);
+					}
+
+					else if (brother->getRight() && brother->getRight()->getColor() == red) {
+						newTree = leftRotation(ancestor);
+						newTree->getLeft()->setColor(black);
+					}
+				}
+				newTree->setColor(temp);
+
+				if (grandAncestor == NULL) {
+					root = newTree;
+				}
+				else {
+					if (newTree->getData() < grandAncestor->getData()) grandAncestor->setLeft(newTree);
+					else grandAncestor->setRight(newTree);
+				}
+			}
+
+			//Rb2 or Lb2
+			else if (flag1 && flag2) {
+				RBTreeNode<T>* grandAncestor = ancestor->getAncestor();
+				RBTreeNode<T>* newTree = NULL;
+				nodeColor temp = ancestor->getColor();
+				if (brother == ancestor->getLeft()) {
+					newTree = leftRightRotation(ancestor);
+				}
+				else if (brother == ancestor->getRight()) {
+					newTree = rightLeftRotation(ancestor);
+				}
+				newTree->setColor(temp);
+				newTree->setRight(black);
+				newTree->setLeft(black);
+				if (grandAncestor == NULL) {
+					root = newTree;
+				}
+				else {
+					if (newTree->getData() < grandAncestor->getData()) grandAncestor->setLeft(newTree);
+					else grandAncestor->setRight(newTree);
+				}
+			}
+		}
+		else if (brother->getColor() == red) {
+
+		}
+
+	}
+
+	template <class T>
 	RBTreeNode<T>* RBTree<T>::find(const T& theKey) {
 		if (root == NULL) return NULL;
 
@@ -297,10 +397,12 @@ namespace dataStructure {
 		if (target->getData() != theKey) return;
 
 		RBTreeNode<T>* ancestor = target->getAncestor();
-		RBTreeNode<T>* t = target;
 		RBTreeNode<T>* replaceNode = NULL;
 
+		//Not the leaf node
 		if (target->getLeft() != NULL || target->getRight() != NULL) {
+
+			RBTreeNode<T>* t = target;
 			if (target->getLeft() != NULL) {
 				while (t) {
 					replaceNode = t;
@@ -317,7 +419,12 @@ namespace dataStructure {
 			t = target;
 			ancestor = t->getAncestor();
 		}
-		if (target->getColor() == red) {
+
+		if (target == root) {
+			delete target;
+			root = NULL;
+		}
+		else if (target->getColor() == red) {
 			if (ancestor->getLeft() == target) {
 				ancestor->setLeft() = NULL;
 			}
@@ -329,10 +436,30 @@ namespace dataStructure {
 		}
 		else {
 			RBTreeNode<T>* brother = NULL;
+			if (ancestor->getLeft() == target) brother = ancestor->getRight();
+			else brother = ancestor->getLeft();
 			delete target;
-			target = ancestor;
-			ancestor = ancestor->getAncestor();
+
+
+			if (ancestor->getColor() == black) {
+				if ((brother->getLeft() == NULL && brother->getRight() == NULL) ||
+					(brother->getLeft()->getColor() == black && brother->getRight()->getColor() == black)) {
+					while (true) {
+						brother->setColor(red);
+						if (ancestor == root) break;
+						else {
+							RBTreeNode<T>* temp = ancestor;
+							ancestor = ancestor->getAncestor();
+							if (ancestor->getLeft() == temp) brother = ancestor->getRight();
+							else brother = ancestor->getRight();
+						}
+					}
+				}
+			}
 
 		}
 	}
+
+
+
 }
