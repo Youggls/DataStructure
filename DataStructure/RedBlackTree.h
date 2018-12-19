@@ -19,7 +19,7 @@ namespace dataStructure {
 
 		void setLeft(RBTreeNode<T>* l) { left = l; };
 		void setRight(RBTreeNode<T>* r) { right = r; };
-		void setAncestor(RBTreeNode<T>* a) { 
+		void setAncestor(RBTreeNode<T>* a) {
 			ancestor = a;
 		};
 
@@ -192,7 +192,7 @@ namespace dataStructure {
 				else return t;
 			}
 			else if (theKey > t->getData()) {
-				if(t->getRight()) t = t->getRight();
+				if (t->getRight()) t = t->getRight();
 				else return t;
 			}
 		}
@@ -207,7 +207,7 @@ namespace dataStructure {
 		RBTreeNode<T>* t = root;
 		while (t) {
 			if (t->getData() == theKey) return true;
-			
+
 			if (theKey < t->getData()) t = t->getLeft();
 			else if (theKey > t->getData()) t = t->getRight();
 		}
@@ -246,7 +246,7 @@ namespace dataStructure {
 			//Target is the left child of it's ancestor
 
 			RBTreeNode<T>* tempNewNode = NULL;
-			RBTreeNode<T>* targetGrandAncestor = target->getAncestor()->getAncestor();		
+			RBTreeNode<T>* targetGrandAncestor = target->getAncestor()->getAncestor();
 
 			if ((target->getAncestor()->getLeft() == NULL || target->getAncestor()->getRight() == NULL) &&
 				!(target->getAncestor()->getLeft() == NULL && target->getAncestor()->getRight() == NULL)) {
@@ -263,13 +263,13 @@ namespace dataStructure {
 				else if (target->getAncestor()->getRight() == target) {
 					//The insert position is at the right of the target(just like AVL RR)
 					if (theKey > target->getData()) tempNewNode = leftRotation(target->getAncestor());
-						//The insert position is at the left of the target(just like AVL RL)
-					else if (theKey < target->getData()) 
+					//The insert position is at the left of the target(just like AVL RL)
+					else if (theKey < target->getData())
 						tempNewNode = rightLeftRotation(target->getAncestor());
 				}
 
 				//Set the target's grandancestor's child
-				if (targetGrandAncestor == NULL) { 
+				if (targetGrandAncestor == NULL) {
 					root = tempNewNode;
 					tempNewNode->setAncestor(NULL);
 				}
@@ -286,6 +286,53 @@ namespace dataStructure {
 
 				rePaintColor(target, brother, black);
 			}
+		}
+	}
+
+	template <class T>
+	void RBTree<T>::deleteNode(const T& theKey) {
+		if (root == NULL) return;
+
+		RBTreeNode<T>* target = find(theKey);
+		if (target->getData() != theKey) return;
+
+		RBTreeNode<T>* ancestor = target->getAncestor();
+		RBTreeNode<T>* t = target;
+		RBTreeNode<T>* replaceNode = NULL;
+
+		if (target->getLeft() != NULL || target->getRight() != NULL) {
+			if (target->getLeft() != NULL) {
+				while (t) {
+					replaceNode = t;
+					t = t->getRight();
+				}
+			}
+			else if (target->getRight() != NULL) {
+				while (t) {
+					replaceNode = t;
+					t = t->getLeft();
+				}
+			}
+			target->setData(t->getData());
+			t = target;
+			ancestor = t->getAncestor();
+		}
+		if (target->getColor() == red) {
+			if (ancestor->getLeft() == target) {
+				ancestor->setLeft() = NULL;
+			}
+			else {
+				ancestor->setRight() = NULL;
+			}
+			delete target;
+			target = NULL;
+		}
+		else {
+			RBTreeNode<T>* brother = NULL;
+			delete target;
+			target = ancestor;
+			ancestor = ancestor->getAncestor();
+
 		}
 	}
 }

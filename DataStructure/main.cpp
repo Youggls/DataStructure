@@ -13,7 +13,7 @@ int main() {
 	//int* a = generateArray(10);
 	//a = rankSort<int>(a, 10);
 	int n;
-//	n = 40;
+//r	n = 40;
 	cin >> n;
 	int* a = generateArray(n);
 //	int a[40];
