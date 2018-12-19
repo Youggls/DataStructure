@@ -39,7 +39,7 @@ namespace dataStructure {
 		RBTreeNode<T>* leftRightRotation(RBTreeNode<T>* node);
 		RBTreeNode<T>* rightLeftRotation(RBTreeNode<T>* node);
 
-		void rePaintColor(RBTreeNode<T>* node, RBTreeNode<T>* brother, nodeColor c = red);
+		void rePaintColor(RBTreeNode<T>* node, RBTreeNode<T>* brother, nodeColor c = black);
 	public:
 		RBTree() { root = NULL; nodeNum = 0; };
 
@@ -55,6 +55,7 @@ namespace dataStructure {
 		RBTreeNode<T>* newTree = node->getRight();
 		node->setRight(newTree->getLeft());
 		newTree->setLeft(node);
+		node->setAncestor(newTree);
 		newTree->setColor(red);
 
 		return newTree;
@@ -64,7 +65,9 @@ namespace dataStructure {
 	RBTreeNode<T>* RBTree<T>::rightRotation(RBTreeNode<T>* node) {
 		RBTreeNode<T>* newTree = node->getLeft();
 		node->setLeft(newTree->getRight());
+
 		newTree->setRight(node);
+		node->setAncestor(newTree);
 		newTree->setColor(black);
 
 		return newTree;
@@ -75,7 +78,8 @@ namespace dataStructure {
 		RBTreeNode<T>* newTree = leftRotation(node->getLeft());
 		node->setLeft(newTree);
 		newTree = rightRotation(node);
-		newTree->setColor(balck);
+
+		newTree->setColor(black);
 		newTree->getLeft()->setColor(red);
 		newTree->getRight()->setColor(red);
 
@@ -105,11 +109,11 @@ namespace dataStructure {
 		if (ancestor != root) {
 			ancestor->setColor(c);
 			RBTreeNode<T>* grandAncestor = ancestor->getAncestor();
-			RBTreeNode<T>* ancestorBrother = NULL;
+			RBTreeNode<T>* grandAncestorBrother = NULL;
 
-			//ancestor != root, means it must have a ancestor
-			if (grandAncestor->getLeft() == ancestor) ancestorBrother = grandAncestor->getRight();
-			else ancestorBrother = grandAncestor->getLeft();
+			////ancestor != root, means it must have an ancestor
+			//if (grandAncestor->getLeft() == ancestor) ancestorBrother = grandAncestor->getRight();
+			//else ancestorBrother = grandAncestor->getLeft();
 
 			//Judge the repaint situation
 
@@ -118,12 +122,53 @@ namespace dataStructure {
 				return;
 			}
 			else {
+				//If grandAncestor is red, it must have an ancestor
+				RBTreeNode<T>* greatGrandAncestor = grandAncestor->getAncestor();
+				RBTreeNode<T>* newNode = NULL;
+				RBTreeNode<T>* temp = greatGrandAncestor->getAncestor();
+				if (greatGrandAncestor->getLeft() == grandAncestor) grandAncestorBrother = greatGrandAncestor->getRight();
+				else grandAncestorBrother = greatGrandAncestor->getRight();
+				if (grandAncestorBrother == NULL || grandAncestorBrother->getColor() == black) {
+					if (greatGrandAncestor->getLeft() == grandAncestor) {
+						if (grandAncestor->getLeft() == ancestor) {
+							newNode = rightRotation(greatGrandAncestor);
+						}
+						else if (grandAncestor->getRight() == ancestor) {
+							newNode = leftRightRotation(greatGrandAncestor);
+						}
+					}
+					else if (greatGrandAncestor->getRight() == grandAncestor) {
+						if (grandAncestor->getRight() == ancestor) {
+							newNode = leftRotation(greatGrandAncestor);
+						}
+						else if (grandAncestor->getLeft() == ancestor) {
+							newNode = rightLeftRotation(greatGrandAncestor);
+						}
+					}
 
+					if (temp != NULL) {
+						if (temp->getData() > newNode->getData()) {
+							temp->setLeft(newNode);
+							newNode->setAncestor(temp);
+						}
+						else if (temp->getData() < newNode->getData()) {
+							temp->setRight(newNode);
+							newNode->setAncestor(temp);
+						}
+					}
+					else {
+						root = newNode;
+						newNode->setAncestor(NULL);
+					}
+				}
+				else if (grandAncestorBrother != NULL && grandAncestorBrother->getColor() == red) {
+					rePaintColor(grandAncestor, grandAncestorBrother, black);
+				}
 			}
 		}
-
-
-		return;
+		else {
+			return;
+		}
 	}
 
 	template <class T>
@@ -166,10 +211,10 @@ namespace dataStructure {
 	void RBTree<T>::insert(const T& theKey) {
 		RBTreeNode<T>* newNode = new RBTreeNode<T>(theKey);
 
-		if (root = NULL) {
+		if (root == NULL) {
 			root = newNode;
 			root->setColor(black);
-			newNode.setAncestor(NULL);
+			newNode->setAncestor(NULL);
 			return;
 		}
 
@@ -201,25 +246,17 @@ namespace dataStructure {
 				//The target is at the left of it's ancestor
 				if (target->getAncestor()->getLeft() == target) {
 					//The insertPos is at the left(just like AVL LL)
-					if (theKey < target->getData()) {
-						tempNewNode = rightRotation(target->getAncestor());
-					}
+					if (theKey < target->getData()) tempNewNode = rightRotation(target->getAncestor());
 					//The new node is at the right of the insertpos just like AVL LR
-					else if (theKey > target->getData()) {
-						tempNewNode = leftRightRotation(target->getAncestor());
-					}
+					else if (theKey > target->getData()) tempNewNode = leftRightRotation(target->getAncestor());
 				}
 
 				//The target is at the right of it's ancestor
-				else if (target->getAncestor()->getRight() == taregt) {
+				else if (target->getAncestor()->getRight() == target) {
 					//The insert position is at the right of the target(just like AVL RR)
-					if (theKey > target->getData()) {
-						tempNewNode = leftRotation(target->getAncestor());
-					}
-					//The insert position is at the left of the target(just like AVL RL)
-					else if (theKey < target->getData()) {
-						tempNewNode = rightLeftRotation(target->getAncestor());
-					}
+					if (theKey > target->getData()) tempNewNode = leftRotation(target->getAncestor());
+						//The insert position is at the left of the target(just like AVL RL)
+					else if (theKey < target->getData()) tempNewNode = rightLeftRotation(target->getAncestor());
 				}
 
 				//Set the target's grandancestor's child
@@ -238,7 +275,7 @@ namespace dataStructure {
 				if (target->getAncestor()->getLeft() == target) brother = target->getAncestor()->getRight();
 				else brother = target->getAncestor()->getLeft();
 
-				rePaintColor(target, brother, red);
+				rePaintColor(target, brother, black);
 			}
 		}
 	}
