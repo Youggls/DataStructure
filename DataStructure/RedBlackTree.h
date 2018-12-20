@@ -94,9 +94,50 @@ namespace dataStructure {
 
 	template <class T>
 	void RBTree<T>::insertCase4(RBTreeNode<T>* node) {
-		if (node->getAncestor()->getRight() == node && node->getAncestor() == node->getAncestor()->getAncestor()->getLeft()) {
-			
+		RBTreeNode<T>* ancestor = node->getAncestor();
+		if (ancestor->getRight() == node && ancestor == ancestor->getAncestor()->getLeft()) {
+			RBTreeNode<T>* newTree = leftRotation(node->getAncestor());
+			ancestor->setRight(newTree);
+
+			newTree->setColor(red);
+			newTree->getLeft()->setColor(red);
+
+			node = newTree->getLeft();	
 		}
+		else if (ancestor->getLeft() == node && ancestor == ancestor->getAncestor()->getRight()) {
+			RBTreeNode<T>* newTree = rightRotation(node->getAncestor());
+			ancestor->setLeft(newTree);
+
+			newTree->setColor(red);
+			newTree->getLeft()->setColor(red);
+
+			node = newTree->getRight();
+		}
+		insertCase5(node);
+	}
+
+	template <class T>
+	void RBTree<T>::insertCase5(RBTreeNode<T>* node) {
+		node->getAncestor()->setColor(black);
+		node->getAncestor()->getAncestor()->setColor(red);
+
+		RBTreeNode<T>* newTree = NULL;
+		if (node == node->getAncestor()->getLeft() && node->getAncestor() == node->getAncestor()->getAncestor()->getLeft()) {
+			newTree = rightRotation(node->getAncestor()->getAncestor());
+		}
+		else {
+			leftRotation(node->getAncestor()->getAncestor());
+		}
+		newTree->setColor(black);
+		newTree->getRight()->setColor(red);
+		newTree->getLeft()->setColor(red);
+		if (node->getAncestor()->getAncestor() != root) {
+			if (node->getAncestor()->getAncestor()->getAncestor()->getData() > newTree->getData()) {
+				node->getAncestor()->getAncestor()->getAncestor()->setRight(newTree);
+			}
+			else node->getAncestor()->getAncestor()->getAncestor()->setLeft(newTree);
+		}
+		else root = newTree;
 	}
 
 	template <class T>
@@ -268,6 +309,23 @@ namespace dataStructure {
 		}
 
 		return false;
+	}
+
+	template <class T>
+	void RBTree<T>::insert(const T& theKey) {
+		if (root == NULL) {
+			root = new RBTreeNode<T>(theKey);
+			RBTreeNode<T>* outNode1 = new RBTreeNode<T>;
+			RBTreeNode<T>* outNode2 = new RBTreeNode<T>;
+
+			root->setLeft(outNode1);
+			root->setRight(outNode2);
+			outNode1->setAncestor(root);
+			outNode2->setAncestor(root);
+		}
+		else {
+
+		}
 	}
 
 	//template <class T>
