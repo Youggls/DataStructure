@@ -12,3 +12,4 @@
 #include "RankSort.h"
 #include "QuickSort.h"
 #include "linkedList.h"
+#include "MergeSort.h"

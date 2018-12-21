@@ -68,7 +68,7 @@ namespace dataStructure {
 	void linkedList<T>::erase(int pos, int len) {
 		if (pos + 1 > num) return;
 
-		listNode<T>* t = root;
+		listNode<T>* t = head;
 		listNode<T>* pre = NULL;
 		for (int i = 0; i < pos; i++) {
 			pre = t;
