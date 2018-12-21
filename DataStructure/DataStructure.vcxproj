@@ -129,6 +129,7 @@
     <ClInclude Include="BTree.h" />
     <ClInclude Include="DataStructure.hpp" />
     <ClInclude Include="graph.h" />
+    <ClInclude Include="linkedList.h" />
     <ClInclude Include="MaxHeap.h" />
     <ClInclude Include="QuickSort.h" />
     <ClInclude Include="RankSort.h" />
