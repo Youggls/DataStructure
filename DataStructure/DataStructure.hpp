@@ -13,3 +13,5 @@
 #include "QuickSort.h"
 #include "linkedList.h"
 #include "MergeSort.h"
+#include "InsertionSort.h"
+#include "ShellSort.h"

@@ -11,6 +11,15 @@ using std::swap;
 #include <ctime>
 #endif // !CTIME
 
+#ifndef IOSTREAM
+#define IOSTREAM
+#include <iostream>
+using std::cin;
+using std::cout;
+using std::endl;
+#endif // !IOSTREAM
+
+
 
 namespace dataStructure {
 	int* generateArray(int size, int swaptimes = -1) {
@@ -28,5 +37,13 @@ namespace dataStructure {
 		}
 
 		return n;
+	}
+
+	void printArr(int* src, int n) {
+		for (int i = 0; i < n; i++) {
+			std::cout << src[i];
+			if (i != n - 1) cout << ' ';
+		}
+		cout << endl;
 	}
 }

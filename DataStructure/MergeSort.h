@@ -1,19 +1,12 @@
 #pragma once
 
+#ifndef ALGORITHM
+#define ALGORITHM
+#include <algorithm>
+#endif // !ALGORITHM
+
+
 namespace dataStructure {
-	template <class T>
-	T* mergeSort(T* src, int n) {
-		T* rv = new T[n];
-		for (int len = 1; len < n; len = len * 2) {
-			for (int i = 0;i * len <= n; i++) {
-				for (int j = i * len; j < (i + 1)*len; j++) {
-
-				}
-			}
-		}
-		
-	}
-
 	template <class T>
 	void _merge(T* src, int left, int mid, int right) {
 		T* aux = new T[right - left + 1];
@@ -38,5 +31,18 @@ namespace dataStructure {
 				j++;
 			}
 		}
+		delete aux;
+	}
+
+	template <class T>
+	T* mergeSort(T* src, int n) {
+		T* rv = new T[n];
+		for (int len = 1; len < n; len += len) {
+			for (int i = 0; i + len < n; i += 2 * len) {
+				_merge(src, i, i + len - 1, std::min(i + 2 * len - 1, n - 1));
+			}
+		}
+
+		return src;
 	}
 }

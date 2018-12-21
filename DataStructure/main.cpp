@@ -2,7 +2,7 @@
 #include "DataStructure.hpp"
 
 using namespace std;
-
-int main() {
-
-}
+//using dataStructure::mergeSort;
+using dataStructure::generateArray;
+//using dataStructure::insertionSort;
+using dataStructure::printArr;
