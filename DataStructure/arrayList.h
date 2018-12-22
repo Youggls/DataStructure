@@ -14,9 +14,9 @@ namespace dataStructure {
 	class arrayList {
 	private:
 		T* data;
-		size_t elementNum;
-		size_t capacity;
-		static const size_t upperBound = pow(2, sizeof(size_t)) - 1000;
+		int elementNum;
+		int capacity;
+		static const int upperBound = INT_MAX - 1000;
 
 		float load_factor;
 		const char* outOfBound();
@@ -25,23 +25,23 @@ namespace dataStructure {
 		static const int npos = -1;
 
 		arrayList(float factor = 1.5);
-		arrayList(T* a, size_t size, float factor = 1.5);
-		arrayList(size_t cap, float factor = 1.5);
+		arrayList(T* a, int size, float factor = 1.5);
+		arrayList(int cap, float factor = 1.5);
 		arrayList(const arrayList<T>& another);
 
 		bool isEmpty();
 		int find(const T& target);
-		size_t size() { return elementNum; };
-		void erase(size_t start, size_t len = 1);
-		void insert(const T& element, size_t index);
-		T& at(size_t index);
+		int size() { return elementNum; };
+		void erase(int start, int len = 1);
+		void insert(const T& element, int index = -1);
+		T& at(int index);
 		arrayList<T>& operator=(const arrayList<T>& another);
-		T& operator[](const size_t& index);
+		T& operator[](const int& index);
 	};
 
 	template <class T>
 	arrayList<T>::arrayList(float factor) {
-		//	upperBound = pow(2, sizeof(size_t)) - 1000;
+		//	upperBound = pow(2, sizeof(int)) - 1000;
 		load_factor = factor;
 		capacity = 0;
 		elementNum = 0;
@@ -49,22 +49,22 @@ namespace dataStructure {
 	}
 
 	template <class T>
-	arrayList<T>::arrayList(T* a, size_t size, float factor) {
-		//	upperBound = pow(2, sizeof(size_t)) - 1000;
+	arrayList<T>::arrayList(T* a, int size, float factor) {
+		//	upperBound = pow(2, sizeof(int)) - 1000;
 		if (size >= upperBound) throw outOfMaxsize();
 		elementNum = size;
 		load_factor = factor;
 		capacity = static_cast<int>(load_factor * size);
 		data = new T[capacity];
 
-		for (size_t i = 0; i < size; i++) {
+		for (int i = 0; i < size; i++) {
 			data[i] = a[i];
 		}
 	}
 
 	template <class T>
-	arrayList<T>::arrayList(size_t cap, float factor) {
-		//	upperBound = pow(2, sizeof(size_t)) - 1000;
+	arrayList<T>::arrayList(int cap, float factor) {
+		//	upperBound = pow(2, sizeof(int)) - 1000;
 		if (cap >= upperBound) throw outOfMaxsize();
 		load_factor = factor;
 		capacity = cap;
@@ -79,7 +79,7 @@ namespace dataStructure {
 		load_factor = another.load_factor;
 
 		T* newDataSpace = new T[capacity];
-		for (size_t i = 0; i < elementNum; i++) {
+		for (int i = 0; i < elementNum; i++) {
 			newDataSpace[i] = another.at(i);
 		}
 		delete data;
@@ -88,8 +88,8 @@ namespace dataStructure {
 
 	template <class T>
 	bool arrayList<T>::isEmpty() {
-		if (elementNum == 0) return false;
-		else return true;
+		if (elementNum == 0) return true;
+		else return false;
 	}
 
 	template <class T>
@@ -104,21 +104,22 @@ namespace dataStructure {
 	}
 
 	template <class T>
-	void arrayList<T>::erase(size_t start, size_t len) {
+	void arrayList<T>::erase(int start, int len) {
 		if (start + len > elementNum) throw outOfBound();
-		for (size_t i = start; i < elementNum - start - len + 2; i++) {
+		for (int i = start; i < elementNum - start - len + 2; i++) {
 			data[i] = data[i + len];
 		}
 		elementNum -= len;
 	}
 
 	template <class T>
-	void arrayList<T>::insert(const T& element, size_t index) {
+	void arrayList<T>::insert(const T& element, int index) {
+		if (index == -1) index = elementNum;
 		if (elementNum + 1 >= upperBound) throw outOfMaxsize();
 		if (elementNum + 1 >= capacity) {
 			capacity = load_factor * (elementNum + 1);
 			T* newdata = new T[capacity];
-			for (size_t i = 0; i < elementNum + 1; i++) {
+			for (int i = 0; i < elementNum + 1; i++) {
 				if (i != index) newdata[i] = data[i];
 				else {
 					newdata[i] = element;
@@ -132,7 +133,7 @@ namespace dataStructure {
 		T tmp1, tmp2;
 		tmp1 = data[index];
 		tmp2 = data[index];
-		for (size_t i = index; i < elementNum; i++) {
+		for (int i = index; i < elementNum; i++) {
 			tmp1 = data[i + 1];
 			data[i + 1] = data[i];
 			tmp2 = tmp1;
@@ -142,7 +143,7 @@ namespace dataStructure {
 	}
 
 	template <class T>
-	T& arrayList<T>::at(size_t index) {
+	T& arrayList<T>::at(int index) {
 		if (index >= elementNum) throw outOfBound();
 		return data[index];
 	}
@@ -168,7 +169,7 @@ namespace dataStructure {
 		load_factor = another.load_factor;
 
 		T* newDataSpace = new T[capacity];
-		for (size_t i = 0; i < elementNum; i++) {
+		for (int i = 0; i < elementNum; i++) {
 			newDataSpace[i] = another.at(i);
 		}
 		delete data;
@@ -178,7 +179,7 @@ namespace dataStructure {
 	}
 
 	template <class T>
-	T& arrayList<T>::operator[](const size_t& index) {
+	T& arrayList<T>::operator[](const int& index) {
 		return this->at(index);
 	}
 }

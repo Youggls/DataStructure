@@ -43,7 +43,15 @@ namespace dataStructure {
 			return;
 		}
 		
-		if (pos == num - 1) {
+		if (pos == 0) {
+			listNode<T>* newNode = new listNode<T>(theKey);
+			newNode->nxt = head;
+			head = newNode;
+			num++;
+			return;
+		}
+
+		if (pos == num) {
 			listNode<T>* newNode = new listNode<T>(theKey);
 			tail->nxt = newNode;
 			tail = newNode;
@@ -76,18 +84,51 @@ namespace dataStructure {
 		}
 
 		if (pre == NULL) {
-			head = t->nxt;
+			t = t->nxt;
 			delete head;
+			head = t;
+			num--;
 			return;
 		}
 		else if (t == tail) {
 			delete tail;
 			pre->nxt = NULL;
 			tail = pre;
+			num--;
 			return;
 		}
 		pre->nxt = t->nxt;
 		delete t->nxt;
+		num--;
 		return;
+	}
+
+	template <class T>
+	T& linkedList<T>::at(int pos) {
+		if (pos < 0 && pos >= num) throw "out of bounds";
+
+		if (pos == num - 1) return tail->data;
+
+		listNode<T>* t = head;
+		for (int i = 0; i < pos; i++) {
+			t = t->nxt;
+		}
+		return t->data;
+	}
+
+	template <class T>
+	T& linkedList<T>::operator[](int pos) {
+		return at(pos);
+	}
+
+	template <class T>
+	linkedList<T>& linkedList<T>::operator=(const linkedList<T>& another) {
+		linkedList<T> newList;
+
+		for (int i = 0; i < another.num; i++) {
+			newList[i] = another[i];
+		}
+
+		return newList;
 	}
 }

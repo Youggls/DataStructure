@@ -35,9 +35,6 @@
     <ClInclude Include="BinarySearchTree.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="arraryList.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="AVLTree.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -66,6 +63,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ShellSort.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrayStack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="arrayList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedStack.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

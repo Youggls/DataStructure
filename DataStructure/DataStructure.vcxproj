@@ -122,7 +122,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="arraryList.h" />
+    <ClInclude Include="arrayList.h" />
+    <ClInclude Include="ArrayStack.h" />
     <ClInclude Include="AVLTree.h" />
     <ClInclude Include="BinarySearchTree.h" />
     <ClInclude Include="binaryTree.h" />
@@ -131,6 +132,7 @@
     <ClInclude Include="graph.h" />
     <ClInclude Include="InsertionSort.h" />
     <ClInclude Include="linkedList.h" />
+    <ClInclude Include="LinkedStack.h" />
     <ClInclude Include="MaxHeap.h" />
     <ClInclude Include="MergeSort.h" />
     <ClInclude Include="QuickSort.h" />
