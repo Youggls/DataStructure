@@ -13,66 +13,81 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\tree">
+      <UniqueIdentifier>{b10dd81e-3ac0-4771-976d-2ce43c0a088c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\sortAlgorithm">
+      <UniqueIdentifier>{89a2b63a-1825-4bc0-8a7b-4e40d649e384}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\linearStructure">
+      <UniqueIdentifier>{5a25cb15-02fd-4005-9cc7-9afb8d722010}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="abstractBinaryTree.h">
-      <Filter>头文件</Filter>
+    <ClCompile Include="railRoad.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataStructure.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="binaryTree.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="MaxHeap.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="BinarySearchTree.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="AVLTree.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="BTree.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="graph.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="RedBlackTree.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="sortAlgorithm\MergeSort.h">
+      <Filter>头文件\sortAlgorithm</Filter>
     </ClInclude>
-    <ClInclude Include="RankSort.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="sortAlgorithm\QuickSort.h">
+      <Filter>头文件\sortAlgorithm</Filter>
     </ClInclude>
-    <ClInclude Include="QuickSort.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="sortAlgorithm\RankSort.h">
+      <Filter>头文件\sortAlgorithm</Filter>
     </ClInclude>
-    <ClInclude Include="linkedList.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="sortAlgorithm\ShellSort.h">
+      <Filter>头文件\sortAlgorithm</Filter>
     </ClInclude>
-    <ClInclude Include="MergeSort.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="linearStructure\arrayList.h">
+      <Filter>头文件\linearStructure</Filter>
     </ClInclude>
-    <ClInclude Include="InsertionSort.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="linearStructure\ArrayStack.h">
+      <Filter>头文件\linearStructure</Filter>
     </ClInclude>
-    <ClInclude Include="ShellSort.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="sortAlgorithm\InsertionSort.h">
+      <Filter>头文件\linearStructure</Filter>
     </ClInclude>
-    <ClInclude Include="ArrayStack.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="linearStructure\linkedList.h">
+      <Filter>头文件\linearStructure</Filter>
     </ClInclude>
-    <ClInclude Include="arrayList.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="linearStructure\LinkedStack.h">
+      <Filter>头文件\linearStructure</Filter>
     </ClInclude>
-    <ClInclude Include="LinkedStack.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="linearStructure\MaxHeap.h">
+      <Filter>头文件\linearStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="tree\abstractBinaryTree.h">
+      <Filter>头文件\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="tree\BinarySearchTree.h">
+      <Filter>头文件\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="tree\AVLTree.h">
+      <Filter>头文件\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="tree\BTree.h">
+      <Filter>头文件\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="tree\binaryTree.h">
+      <Filter>头文件\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="tree\RedBlackTree.h">
+      <Filter>头文件\tree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

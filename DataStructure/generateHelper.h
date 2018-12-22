@@ -22,11 +22,18 @@ using std::endl;
 
 
 namespace dataStructure {
-	int* generateArray(int size, int swaptimes = -1) {
+	int* generateArray(int size, int order, int swaptimes = -1) {
 		int* n = new int[size];
 		if (swaptimes == -1) swaptimes = size;
-		for (int i = 0; i < size; i++) {
-			n[i] = i;
+		if (order == 1) {
+			for (int i = 0; i < size; i++) {
+				n[i] = i + 1;
+			}
+		}
+		else if (order == -1) {
+			for (int i = 0; i < size; i++) {
+				n[i] = size - i;
+			}
 		}
 
 		srand(time(NULL));

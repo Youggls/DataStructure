@@ -118,27 +118,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="abstractBinaryTree.h" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="railRoad.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="arrayList.h" />
-    <ClInclude Include="ArrayStack.h" />
-    <ClInclude Include="AVLTree.h" />
-    <ClInclude Include="BinarySearchTree.h" />
-    <ClInclude Include="binaryTree.h" />
-    <ClInclude Include="BTree.h" />
     <ClInclude Include="DataStructure.hpp" />
     <ClInclude Include="graph.h" />
-    <ClInclude Include="InsertionSort.h" />
-    <ClInclude Include="linkedList.h" />
-    <ClInclude Include="LinkedStack.h" />
-    <ClInclude Include="MaxHeap.h" />
-    <ClInclude Include="MergeSort.h" />
-    <ClInclude Include="QuickSort.h" />
-    <ClInclude Include="RankSort.h" />
-    <ClInclude Include="RedBlackTree.h" />
-    <ClInclude Include="ShellSort.h" />
+    <ClInclude Include="linearStructure\arrayList.h" />
+    <ClInclude Include="linearStructure\ArrayStack.h" />
+    <ClInclude Include="linearStructure\linkedList.h" />
+    <ClInclude Include="linearStructure\LinkedStack.h" />
+    <ClInclude Include="linearStructure\MaxHeap.h" />
+    <ClInclude Include="sortAlgorithm\InsertionSort.h" />
+    <ClInclude Include="sortAlgorithm\MergeSort.h" />
+    <ClInclude Include="sortAlgorithm\QuickSort.h" />
+    <ClInclude Include="sortAlgorithm\RankSort.h" />
+    <ClInclude Include="sortAlgorithm\ShellSort.h" />
+    <ClInclude Include="tree\abstractBinaryTree.h" />
+    <ClInclude Include="tree\AVLTree.h" />
+    <ClInclude Include="tree\BinarySearchTree.h" />
+    <ClInclude Include="tree\binaryTree.h" />
+    <ClInclude Include="tree\BTree.h" />
+    <ClInclude Include="tree\RedBlackTree.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
