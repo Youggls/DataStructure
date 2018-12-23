@@ -8,6 +8,9 @@
 #include "linearStructure/arrayList.h"
 #include "linearStructure/ArrayStack.h"
 #include "linearStructure/LinkedStack.h"
+//#include "linearStructure/abstractQueue.h"
+#include "linearStructure/linkedQueue.h"
+#include "linearStructure/ArrayQueue.h"
 
 #include "tree/AVLTree.h"
 #include "graph.h"

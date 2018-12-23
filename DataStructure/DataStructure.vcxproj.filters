@@ -22,6 +22,9 @@
     <Filter Include="头文件\linearStructure">
       <UniqueIdentifier>{5a25cb15-02fd-4005-9cc7-9afb8d722010}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\MatrixAndGraph">
+      <UniqueIdentifier>{5c214744-eb60-4f6b-87b5-660a168f8c12}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -36,9 +39,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataStructure.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="graph.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="sortAlgorithm\MergeSort.h">
@@ -89,8 +89,30 @@
     <ClInclude Include="tree\RedBlackTree.h">
       <Filter>头文件\tree</Filter>
     </ClInclude>
+    <ClInclude Include="generateHelper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MatrixAndGraph\SpraseMatrix.h">
+      <Filter>头文件\MatrixAndGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="graph.h">
+      <Filter>头文件\MatrixAndGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="linearStructure\ArrayQueue.h">
+      <Filter>头文件\linearStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="linearStructure\LinkedQueue.h">
+      <Filter>头文件\linearStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="sortAlgorithm\Kmp.h">
+      <Filter>头文件\sortAlgorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="linearStructure\abstractQueue.h">
+      <Filter>头文件\linearStructure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

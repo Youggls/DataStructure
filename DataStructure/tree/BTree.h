@@ -159,7 +159,7 @@ namespace dataStructure {
 		BTreeElement<T>* pre = newElement;
 		BTreeElement<T>* nxt;
 		BTreeElement<T>* t = this->data[num];
-		for (int i = pos + 1; i < num; i++) {
+		for (int i = pos; i < num; i++) {
 			nxt = data.at(i);
 			data.at(i) = pre;
 			pre = nxt;
@@ -276,11 +276,15 @@ namespace dataStructure {
 
 		//Set the child
 		BTreeElement<T>* t = node->getElement(0);
-		t->setChild(node->getElement(1)->getChild());
-		node->getElement(1)->setChild(left->getElement(left->size() - 1)->getChild());
+//		t->setChild(node->getElement(1)->getChild());
+		t->setChild(left->getElement(left->size())->getChild());
+		left->getElement(left->size())->setChild(NULL);
+//		node->getElement(1)->setChild(left->getElement(left->size() - 1)->getChild());
 		
 		//delete the element from the left
+		BTreeNode<T>* temp1 = left->getElement(left->size() - 1)->getChild();
 		left->deleteSingle(left->size() - 1);
+		left->getElement(left->size())->setChild(temp1);
 	}
 
 	template <class T>
