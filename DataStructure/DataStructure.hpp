@@ -13,7 +13,9 @@
 #include "linearStructure/ArrayQueue.h"
 
 #include "tree/AVLTree.h"
-#include "graph.h"
+#include "MatrixAndGraph/AdjMatrixGraph.h"
+#include "MatrixAndGraph/linkedGraph.h"
+#include "MatrixAndGraph/SpraseMatrix.h"
 #include "tree/binaryTree.h"
 #include "tree/BinarySearchTree.h"
 #include "tree/RedBlackTree.h"

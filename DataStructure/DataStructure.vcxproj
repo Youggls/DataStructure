@@ -125,7 +125,6 @@
   <ItemGroup>
     <ClInclude Include="DataStructure.hpp" />
     <ClInclude Include="generateHelper.h" />
-    <ClInclude Include="graph.h" />
     <ClInclude Include="linearStructure\abstractQueue.h" />
     <ClInclude Include="linearStructure\arrayList.h" />
     <ClInclude Include="linearStructure\ArrayQueue.h" />
@@ -134,6 +133,8 @@
     <ClInclude Include="linearStructure\LinkedQueue.h" />
     <ClInclude Include="linearStructure\LinkedStack.h" />
     <ClInclude Include="linearStructure\MaxHeap.h" />
+    <ClInclude Include="MatrixAndGraph\AdjMatrixGraph.h" />
+    <ClInclude Include="MatrixAndGraph\linkedGraph.h" />
     <ClInclude Include="MatrixAndGraph\SpraseMatrix.h" />
     <ClInclude Include="sortAlgorithm\InsertionSort.h" />
     <ClInclude Include="sortAlgorithm\Kmp.h" />

@@ -95,9 +95,6 @@
     <ClInclude Include="MatrixAndGraph\SpraseMatrix.h">
       <Filter>头文件\MatrixAndGraph</Filter>
     </ClInclude>
-    <ClInclude Include="graph.h">
-      <Filter>头文件\MatrixAndGraph</Filter>
-    </ClInclude>
     <ClInclude Include="linearStructure\ArrayQueue.h">
       <Filter>头文件\linearStructure</Filter>
     </ClInclude>
@@ -109,6 +106,12 @@
     </ClInclude>
     <ClInclude Include="linearStructure\abstractQueue.h">
       <Filter>头文件\linearStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="MatrixAndGraph\linkedGraph.h">
+      <Filter>头文件\MatrixAndGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="MatrixAndGraph\AdjMatrixGraph.h">
+      <Filter>头文件\MatrixAndGraph</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -11,67 +11,90 @@ using std::vector;
 using std::string;
 #endif // !STRING
 
-#define DIRECTED_GRAPH 0;
-#define UNDIRECTED_GRAPH 1;
-
 namespace dataStructure {
 	class edge {
-	private:
-		int from;
-		int to;
-		int len;
 	public:
-		edge(int n1, int n2, int l) { from = n1; to = n2; len = l; };
-		edge(const edge& e) { from = e.from; to = e.to; len = e.len; };
-		edge() { from = -1; to = -1; len = INT_MAX; };
-		int getFrom() const { return from; };
-		int getTo() const { return to; };
-		int getLen() const { return len; };
-
-		void setFrom(const int& f) { from = f; };
-		void setTo(const int& t) { to = t; };
-		void setLen(const int& l) { len = l; };
+		edge(int a, int b, int ww = 1) { i = a; j = b; w = ww; }
+		edge() { i = 1; j = 1; w = INT_MAX; }
+		int i;
+		int j;
+		int w;
 	};
-	class graph {
+
+	class adjMatrixGraph {
 	private:
-		vector<vector<int>> adjMatrix;
-		int nodeNum;
-		int edgeNum;
+		int** adjMatrix;
+		int v;
+		int e;
 	public:
-		graph(int n);
+		adjMatrixGraph(int n = 0);
+		int verticesSize() { return v; }
+		int edgeSize() { return e; }
+		bool existEdge(int i, int j);
 		void insertEdge(const edge& e);
-		void insertEdge(const int& from, const int& to, const int& len = 1);
+		void insertEdge(int i, int j, int w = 1);
+		void eraseEdge(int i, int j);
+
+		edge* getAllEdge();
 	};
 
-	graph::graph(int n) {
-		adjMatrix.resize(n);
-		for (int i = 0; i < n; i++) {
-			adjMatrix.at(i).resize(n);
-		}
+	adjMatrixGraph::adjMatrixGraph(int n) {
+		if (n < 0) throw "The input is wrong!";
 
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				adjMatrix.at(i).at(j) = INT_MAX;
+		v = n;
+		e = 0;
+
+		adjMatrix = new int*[n + 1];
+		for (int i = 1; i < n + 1; i++) {
+			adjMatrix[i] = new int[n + 1];
+			for (int j = 1; j < n + 1; j++) adjMatrix[i][j] = INT_MAX;
+		}
+	}
+
+	bool adjMatrixGraph::existEdge(int i, int j) {
+		if (i < 1 || j < 1 || i > v || j > v || adjMatrix[i][j] == INT_MAX) return false;
+		else return true;
+	}
+
+	void adjMatrixGraph::insertEdge(int i, int j, int w) {
+		if (i < 1 || j < 1 || i > v || j > v) return;
+		else if (adjMatrix[i][j] != INT_MAX) return;
+
+		e++;
+		adjMatrix[i][j] = w;
+	}
+
+	void adjMatrixGraph::insertEdge(const edge& ed) {
+		int i = ed.i;
+		int j = ed.j;
+		int w = ed.w;
+
+		insertEdge(i, j, w);
+	}
+
+	void adjMatrixGraph::eraseEdge(int i, int j) {
+		if (i < 1 || j < 1 || i > v || j > v) return;
+		adjMatrix[i][j] = INT_MAX;
+		e--;
+	}
+
+	edge* adjMatrixGraph::getAllEdge() {
+		edge* rev = new edge[e];
+
+		int k = 0;
+		for (int i = 1; i <= v; i++) {
+			for (int j = 1; j <= v; j++) {
+				if (adjMatrix[i][j] != INT_MAX) {
+					rev[k].i = i;
+					rev[k].j = j;
+					rev[k].w = adjMatrix[i][j];
+					k++;
+				}
+				if (k == e - 1) return rev;
 			}
 		}
-
-		nodeNum = 0;
-		edgeNum = 0;
+		return rev;
 	}
-
-	void graph::insertEdge(const edge& e) {
-		int from = e.getFrom();
-		int to = e.getTo();
-		int len = e.getLen();
-
-		adjMatrix.at(from).at(to) = len;
-	}
-	
-	void graph::insertEdge(const int& f, const int& t, const int& l) {
-		adjMatrix.at(f).at(t) = l;
-	}
-
-	
 }
 
 //#include <bits/stdc++.h>
