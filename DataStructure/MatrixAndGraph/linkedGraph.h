@@ -33,12 +33,7 @@ namespace dataStructure {
 				return NULL;
 			}
 
-			void insert(linkedGraphChain* newEdge, int pos = 0) {
-				if (pos == 0) {
-					newEdge->nxt = nxt;
-					nxt = newEdge;
-				}
-
+			void insert(linkedGraphChain* newEdge, int pos = 1) {
 				linkedGraphChain* t = this;
 				int k = 0;
 				while (k < pos) {
@@ -50,7 +45,17 @@ namespace dataStructure {
 			}
 
 			void erase(int pos) {
+				linkedGraphChain* t = this;
+				linkedGraphChain* pre = NULL;
+				int k = 0;
+				while (k < pos) {
+					pre = t;
+					t = t->nxt;
+					k++;
+				}
 
+				pre->nxt = t->nxt;
+				delete t;
 			}
 		};
 
@@ -103,7 +108,13 @@ namespace dataStructure {
 	void linkedGraph::eraseEdge(int i, int j) {
 		linkedGraphChain* t = aList[i].find(j);
 		if (t != NULL) {
-
+			aList[i].erase(j);
+			return;
 		}
+		else return;
+	}
+
+	void linkedGraph::eraseEdge(const dataStructure::edge& ed) {
+		eraseEdge(ed.i, ed.j);
 	}
 }
