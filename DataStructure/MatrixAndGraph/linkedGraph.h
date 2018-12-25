@@ -91,7 +91,7 @@ namespace dataStructure {
 		return existEdge(ed.i, ed.j);
 	}
 
-	void linkedGraph::insertEdge(int i, int j, int w = 1) {
+	void linkedGraph::insertEdge(int i, int j, int w) {
 		linkedGraphChain* t = aList[i].find(j);
 		if (t == NULL) {
 			linkedGraphChain* newEdge = new linkedGraphChain(j, w);
@@ -116,5 +116,20 @@ namespace dataStructure {
 
 	void linkedGraph::eraseEdge(const dataStructure::edge& ed) {
 		eraseEdge(ed.i, ed.j);
+	}
+
+	dataStructure::edge* linkedGraph::getAllEdge() {
+		edge* rev = new dataStructure::edge[e];
+		int k = 0;
+		for (int i = 1; i <= v; i++) {
+			linkedGraphChain* t = aList[i].nxt;
+			while (t) {
+				rev[k].i = i;
+				rev[k].j = t->v;
+				rev[k].w = t->w;
+			}
+		}
+
+		return rev;
 	}
 }

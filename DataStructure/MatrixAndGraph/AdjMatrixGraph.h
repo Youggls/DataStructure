@@ -11,11 +11,15 @@ using std::vector;
 using std::string;
 #endif // !STRING
 
+#include <queue>
+using std::queue;
+
 namespace dataStructure {
 	class edge {
 	public:
 		edge(int a, int b, int ww = 1) { i = a; j = b; w = ww; }
 		edge() { i = 1; j = 1; w = INT_MAX; }
+		edge(const edge& e) { i = e.i; j = e.j; w = e.w; }
 		int i;
 		int j;
 		int w;
@@ -26,6 +30,8 @@ namespace dataStructure {
 		int** adjMatrix;
 		int v;
 		int e;
+		void _dfs(int v, int* isVisit);
+		void _bfs(int v, int* isVisit);
 	public:
 		adjMatrixGraph(int n = 0);
 		int verticesSize() { return v; }
@@ -35,8 +41,41 @@ namespace dataStructure {
 		void insertEdge(int i, int j, int w = 1);
 		void eraseEdge(int i, int j);
 
+		void dfsVisit(int v);
+		void bfsVisit(int v);
+		vector<edge> kruskal();
+		vector<edge> prim();
+		vector<int> dijkstra(int s);
 		edge* getAllEdge();
 	};
+
+	void adjMatrixGraph::_dfs(int v, int* isVisit) {
+		int num = 0;
+		for (int i = 1; i <= this->v; i++) {
+			if (adjMatrix[v][i] != INT_MAX && isVisit[i] == 0) {
+				cout << i << ' ';
+				isVisit[i] = 1;
+				_dfs(i, isVisit);
+			}
+		}
+	}
+
+	void adjMatrixGraph::_bfs(int v, int* isVisit) {
+		queue<int> adjToV;
+		adjToV.push(v);
+
+		while (!adjToV.empty()) {
+			int tempV = adjToV.front();
+			adjToV.pop();
+			for (int i = 1; i < this->v + 1; i++) {
+				if (adjMatrix[tempV][i] != INT_MAX && isVisit[i] == 0) {
+					cout << i << ' ';
+					isVisit[i] = 1;
+					adjToV.push(i);
+				}
+			}
+		}
+	}
 
 	adjMatrixGraph::adjMatrixGraph(int n) {
 		if (n < 0) throw "The input is wrong!";
@@ -90,7 +129,179 @@ namespace dataStructure {
 					rev[k].w = adjMatrix[i][j];
 					k++;
 				}
-				if (k == e - 1) return rev;
+				if (k == e) 
+					return rev;
+			}
+		}
+		return rev;
+	}
+
+	void adjMatrixGraph::dfsVisit(int v) {
+		int* isVisit = new int[this->v + 1];
+		for (int i = 0; i < this->v + 1; i++) isVisit[i] = 0;
+		cout << v << ' ';
+
+		_dfs(v, isVisit);
+	}
+
+	void adjMatrixGraph::bfsVisit(int v) {
+		int* isVisit = new int[this->v + 1];
+		for (int i = 0; i < this->v + 1; i++) isVisit[i] = 0;
+		cout << v << ' ';
+		_bfs(v, isVisit);
+	}
+
+	vector<edge> adjMatrixGraph::kruskal() {
+		edge* allEdge = getAllEdge();
+		vector<edge> rev;
+		for (int i = 0; i < e - 1; i++) {
+			for (int j = i; j >= 0; j--) {
+				if (allEdge[j + 1].w < allEdge[j].w) {
+					edge t = allEdge[j + 1];
+					allEdge[j + 1] = allEdge[j];
+					allEdge[j] = t;
+				}
+			}
+		}
+
+		int* pre = new int[this->v + 1];
+		for (int i = 1; i <= this->v; i++) pre[i] = i;
+		int k = 1;
+		int j = 0;
+		while (k < this->v) {
+			int t1 = pre[allEdge[j].i];
+			int t2 = pre[allEdge[j].j];
+
+			if (t1 != t2) {
+				edge temp(allEdge[j].i, allEdge[j].j, allEdge[j].w);
+				rev.push_back(temp);
+				k++;
+				for (int i = 0; i < v; i++) {
+					if (pre[i + 1] == t2) pre[i + 1] = t1;
+				}
+			}
+			j++;
+		}
+		delete allEdge;
+		if (rev.size() == v - 1) {
+			rev.resize(0);
+			return rev;
+		}
+		return rev;
+	}
+
+	vector<edge> adjMatrixGraph::prim() {
+		edge* allEdge = getAllEdge();
+		vector<edge> rev;
+		for (int i = 1; i < v - 1; i++) {
+			for (int j = i; j >= 0; j--) {
+				if (allEdge[j + 1].w < allEdge[j].w) {
+					edge t = allEdge[j + 1];
+					allEdge[j + 1] = allEdge[j];
+					allEdge[j] = t;
+				}
+			}
+		}
+
+		vector<int> tv;
+		tv.push_back(1);
+		int k = 0;
+		while (rev.size() != v - 1) {
+			int u;
+			int min_from = -1;
+			int min_index = -1;
+			int min_len = INT_MAX;
+			for (int k = 0; k < tv.size(); k++) {
+				u = tv[k];
+				for (int i = 1; i <= v; i++) {
+					if (adjMatrix[u][i] < min_len) {
+						bool flag = true;
+						for (int j = 0; j < tv.size(); j++) {
+							if (tv[j] == i) {
+								flag = false;
+								break;
+							}
+						}
+						if (flag) {
+							min_len = adjMatrix[u][i];
+							min_index = i;
+							min_from = u;
+						}
+					}
+
+				}
+			}
+			if (min_index == -1) break;
+			else {
+				tv.push_back(min_index);
+				edge t(min_from, min_index, adjMatrix[min_from][min_index]);
+				rev.push_back(t);
+			}
+		}
+
+		if (rev.size() == v - 1) {
+			return rev;
+		}
+		else {
+			rev.resize(0);
+			return rev;
+		}
+	}
+
+	vector<int> adjMatrixGraph::dijkstra(int s) {
+		vector<int> rev(v + 1);
+		for (int i = 1; i <= v; i++) {
+			if (adjMatrix[s][i] != INT_MAX) {
+				rev[i] = s;
+			}
+			else {
+				rev[i] = -1;
+			}
+		}
+		rev[s] = 0;
+
+		vector<int> distance(v + 1, INT_MAX);
+		
+		for (int i = 1; i <= v; i++) {
+			distance[i] = adjMatrix[s][i];
+		}
+		distance[s] = 0;
+
+		vector<int> newReachable;
+		for (int i = 1; i <= v; i++) {
+			if (rev[i] > 0) newReachable.push_back(i);
+		}
+
+		while (!newReachable.empty()) {
+			int minDistance = INT_MAX;
+			int min_index = -1;
+			int minNode = -1;
+			for (int i = 0; i < newReachable.size(); i++) {
+				if (distance[newReachable[i]] < minDistance) {
+					minNode = newReachable[i];
+					min_index = i;
+				}
+			}
+
+			vector<int>::iterator it = newReachable.begin() + min_index;
+			newReachable.erase(it);
+			for (int i = 1; i <= v; i++) {
+				if (adjMatrix[minNode][i] != INT_MAX) {
+					if (distance[i] > distance[minNode] + adjMatrix[minNode][i]) {
+						distance[i] = distance[minNode] + adjMatrix[minNode][i];
+						rev[i] = minNode;
+						bool flag = false;
+						for (int j = 0; j < newReachable.size(); j++) {
+							if (newReachable[j] == i) {
+								flag = true;
+								break;
+							}
+						}
+						if (!flag) {
+							newReachable.push_back(i);
+						}
+					}
+				}
 			}
 		}
 		return rev;
