@@ -4,22 +4,21 @@
 using std::cin;
 using std::cout;
 using std::endl;
-using dataStructure::adjMatrixGraph;
+using dataStructure::sparseMatrix;
+using std::vector;
 
 int main() {
-	adjMatrixGraph adj(10);
-	for (int i = 0; i < 15; i++) {
-		int from;
-		int to;
-		int len;
-		cin >> from >> to >> len;
-		adj.insertEdge(from, to, len);
-	}
-
-	vector<vector<int> > c;
-	vector<vector<int> > kay;
-	adj.floyd(c, kay);
-	cout << c[1][1];
+	sparseMatrix a(4, 4, 4);
+	sparseMatrix b(3, 4, 4);
+	a.insert(2, 1, 4);
+	a.insert(3, 2, 2);
+	a.insert(-4, 2, 4);
+	a.insert(7, 4, 1);
+	b.insert(6, 2, 2);
+	b.insert(4, 2, 4);
+	b.insert(5, 3, 4);
+	sparseMatrix c = a.add(b);
+	c.at(1, 2);
 	system("pause");
 	return 0;
 }

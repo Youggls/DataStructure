@@ -275,7 +275,7 @@ namespace dataStructure {
 	vector<int> adjMatrixGraph::dijkstra(int s) {
 		vector<int> rev(v + 1);
 		for (int i = 1; i <= v; i++) {
-			if (adjMatrix[s][i] != INT_MAX) {//
+			if (adjMatrix[s][i] != INT_MAX) {
 				rev[i] = s;
 			}
 			else {
