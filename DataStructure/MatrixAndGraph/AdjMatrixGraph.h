@@ -269,19 +269,13 @@ namespace dataStructure {
 			}
 		}
 
-		if (rev.size() == v - 1) {
-			return rev;
-		}
-		else {
-			rev.resize(0);
-			return rev;
-		}
+		return rev;
 	}
 
 	vector<int> adjMatrixGraph::dijkstra(int s) {
 		vector<int> rev(v + 1);
 		for (int i = 1; i <= v; i++) {
-			if (adjMatrix[s][i] != INT_MAX) {
+			if (adjMatrix[s][i] != INT_MAX) {//
 				rev[i] = s;
 			}
 			else {
