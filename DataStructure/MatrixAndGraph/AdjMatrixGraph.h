@@ -47,12 +47,36 @@ namespace dataStructure {
 		vector<edge> kruskal();
 		vector<edge> prim();
 		vector<int> dijkstra(int s);
-		void floy(vector<vector<int> >& c, vector<vector<int> >& kay);
+		void floyd(vector<vector<int> >& c, vector<vector<int> >& kay);
 		edge* getAllEdge();
 	};
 
 	void adjMatrixGraph::_floy(vector<vector<int> >& c, vector<vector<int> >& kay) {
+		c.resize(v + 1);
+		kay.resize(v + 1);
 
+		for (int i = 1; i <= v; i++) {
+			c[i].resize(v + 1);
+			kay[i].resize(v + 1);
+			for (int j = 1; j <= v; j++) {
+				if (i == j) c[i][j] = 0;
+				else 
+					c[i][j] = adjMatrix[i][j];
+
+				kay[i][j] = 0;
+			}
+		}
+
+		for (int k = 1; k <= v; k++) {
+			for (int i = 1; i <= v; i++) {
+				for (int j = 1; j <= v; j++) {
+					if (c[i][k] != INT_MAX && c[k][j] != INT_MAX && (c[i][k] + c[k][j] < c[i][j])) {
+						c[i][j] = c[i][k] + c[k][j];
+						kay[i][j] = k;
+					}
+				}
+			}
+		}
 	}
 
 	void adjMatrixGraph::_dfs(int v, int* isVisit) {
@@ -311,6 +335,10 @@ namespace dataStructure {
 			}
 		}
 		return rev;
+	}
+
+	void adjMatrixGraph::floyd(vector<vector<int> > & c, vector<vector<int> > & kay) {
+		_floy(c, kay);
 	}
 }
 
