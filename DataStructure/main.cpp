@@ -16,16 +16,9 @@ using dataStructure::edge;
 //using dataStructure::sparseMatrix;
 
 int main() {
-	adjMatrixGraph adj(5);
-	for (int i = 0; i < 7; i++) {
-		int a;
-		int b;
-		int w;
-		cin >> a >> b >> w;
-		adj.insertEdge(a, b, w);
-	}
-	vector<int> v = adj.dijkstra(1);
-	v.size();
+	string a;
+	getline(cin, a);
+	cout << a;
 	system("pause");
 	return 0;
 }
