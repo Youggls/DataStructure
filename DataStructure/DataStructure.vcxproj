@@ -118,6 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AOE.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="railRoad.cpp" />
     <ClCompile Include="test.cpp" />

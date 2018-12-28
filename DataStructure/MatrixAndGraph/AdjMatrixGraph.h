@@ -33,6 +33,7 @@ namespace dataStructure {
 		void _dfs(int v, int* isVisit);
 		void _bfs(int v, int* isVisit);
 		void _floy(vector<vector<int> >& c, vector<vector<int> >& kay);
+		void _floy(vector<vector<int> > & c, vector<vector<int> >& kay);
 	public:
 		adjMatrixGraph(int n = 0);
 		int verticesSize() { return v; }
@@ -48,9 +49,38 @@ namespace dataStructure {
 		vector<edge> prim();
 		vector<int> dijkstra(int s);
 		vector<vector<int> > floy();
-		int floy(int i, int j);
+		int floyd(int i, int j);
+		void floyd(vector<vector<int> >& c, vector<vector<int> >& kay);
 		edge* getAllEdge();
 	};
+
+	void adjMatrixGraph::_floy(vector<vector<int> >& c, vector<vector<int> >& kay) {
+		c.resize(v + 1);
+		kay.resize(v + 1);
+
+		for (int i = 1; i <= v; i++) {
+			c[i].resize(v + 1);
+			kay[i].resize(v + 1);
+			for (int j = 1; j <= v; j++) {
+				if (i == j) c[i][j] = 0;
+				else 
+					c[i][j] = adjMatrix[i][j];
+
+				kay[i][j] = 0;
+			}
+		}
+
+		for (int k = 1; k <= v; k++) {
+			for (int i = 1; i <= v; i++) {
+				for (int j = 1; j <= v; j++) {
+					if (c[i][k] != INT_MAX && c[k][j] != INT_MAX && (c[i][k] + c[k][j] < c[i][j])) {
+						c[i][j] = c[i][k] + c[k][j];
+						kay[i][j] = k;
+					}
+				}
+			}
+		}
+	}
 
 	void adjMatrixGraph::_dfs(int v, int* isVisit) {
 		int num = 0;
@@ -242,13 +272,7 @@ namespace dataStructure {
 			}
 		}
 
-		if (rev.size() == v - 1) {
-			return rev;
-		}
-		else {
-			rev.resize(0);
-			return rev;
-		}
+		return rev;
 	}
 
 	vector<int> adjMatrixGraph::dijkstra(int s) {
@@ -340,10 +364,13 @@ namespace dataStructure {
 		return c;
 	}
 
-	int adjMatrixGraph::floy(int i, int j) {
+	int adjMatrixGraph::floyd(int i, int j) {
 		vector<vector<int> > c, kay;
 		_floy(c, kay);
 		return c[i][j];
+	}
+	void adjMatrixGraph::floyd(vector<vector<int>>& c, vector<vector<int>>& kay){
+		_floy(c, kay);
 	}
 }
 
@@ -437,382 +464,6 @@ namespace dataStructure {
 //	if (ans != -1) cout << ans;
 //	else cout << "Impossible";
 //
-//	system("pause");
-//	return 0;
-//}
-
-//#include <bits/stdc++.h>
-//using std::cin;
-//using std::cout;
-//using std::endl;
-//using std::vector;
-//using std::string;
-//using std::stack;
-//
-//vector<vector<int> > graph;
-//vector<int> inDegree;
-//vector<int> outDegree;
-//vector<int> ve;
-//vector<int> vl;
-//bool hasCircle;
-//
-//void initialization(int);
-//
-//bool judge() {
-//	for (int i = 0; i < graph.size(); i++) {
-//		int od = 0;
-//		int id = 0;
-//		for (int j = 0; j < graph.size(); j++) {
-//			if (graph.at(i).at(j) != INT_MAX) od++;
-//		}
-//		for (int j = 0; j < graph.size(); j++) {
-//			if (graph.at(j).at(i) != INT_MAX) id++;
-//		}
-//
-//		inDegree[i] = id;
-//		outDegree[i] = od;
-//	}
-//
-//	stack<int> zero;
-//	for (int i = 0; i < inDegree.size(); i++) {
-//		if (inDegree.at(i) == 0) zero.push(i);
-//	}
-//
-//	while (!zero.empty()) {
-//		int top = zero.top();
-//		zero.pop();
-//		for (int i = 0; i < graph.size(); i++) {
-//			if (graph.at(top).at(i) != INT_MAX) {
-//				inDegree[i]--;
-//				if (inDegree[i] == 0) zero.push(i);
-//			}
-//		}
-//	}
-//
-//	for (int i = 0; i < inDegree.size(); i++) {
-//		if (inDegree[i] != 0) return false;
-//	}
-//
-//	return true;
-//}
-//
-//int aoe(int n) {
-//	initialization(n);
-//	if (!judge())
-//		return -1;
-//
-//	for (int i = 1; i < n + 2; i++) {
-//		vector<int> temp;
-//		for (int j = 0; j < n + 2; j++) {
-//
-//			if (graph.at(j).at(i) != INT_MAX) {
-//				temp.push_back(j);
-//			}
-//		}
-//
-//		//Find the max
-//		int max = 0;
-//		for (int j = 0; j < temp.size(); j++) {
-//			int t = temp[j];
-//			if ((max < graph.at(t).at(i) + ve[t]) && (graph.at(t).at(i) != INT_MAX))
-//				max = graph.at(t).at(i) + ve[t];
-//		}
-//
-//		ve[i] = max;
-//	}
-//	//vl[n + 1] = ve[n + 1];
-//	//temp.clear();
-//	//for (int i = n + 1; i >= 0; i--) {
-//	//	for (int j = 0; j < n + 2; j++) {
-//	//		if (graph.at(j).at(i) != INT_MAX) {
-//	//			temp.push_back(j);
-//	//		}
-//	//	}
-//	//	//Find the min
-//	//	int min = 0;
-//	//	for (int j = 0; j < temp.size(); j++) {
-//	//		if (min > vl[j] - graph.at(j).at(i) && graph.at(j).at(i) != INT_MAX)
-//	//			min = vl[j] - graph.at(j).at(i);
-//	//	}
-//	//	vl[i] = min;
-//	//}
-//
-//	return ve[n + 1];
-//}
-//
-//void initialization(int n) {
-//	graph.resize(n + 2);
-//	inDegree.resize(n + 2, 0);
-//	outDegree.resize(n + 2, 0);
-//	ve.resize(n + 2);
-//	vl.resize(n + 2);
-//	for (int i = 0; i < n + 2; i++) {
-//		graph.at(i).resize(n + 2);
-//		ve.at(i) = 0;
-//		vl.at(i) = 0;
-//	}
-//
-//	for (int i = 0; i < n + 2; i++) {
-//		for (int j = 0; j < n + 2; j++) {
-//			graph.at(i).at(j) = INT_MAX;
-//		}
-//	}
-//
-//	for (int i = 0; i < n; i++) {
-//		string t;
-//		getline(cin, t);
-//		if (t == "") {
-//			i--;
-//			continue;
-//		}
-//		if (t.size() == 3) {
-//			graph.at(0).at(t[0] - '0') = t[2] - '0';
-//		}
-//		else if (t.size() > 3) {
-//			vector<int> from;
-//			int to = t[0] - '0';
-//			int len = t[2] - '0';
-//			int k = 3;
-//			while (k < t.size()) {
-//				if (t[k] == ' ' && t[k] == ';') {
-//					k++;
-//					continue;
-//				}
-//				else if (t[k] > '0' && t[k] < '9') {
-//					from.push_back(t[k] - '0');
-//				}
-//				k++;
-//			}
-//
-//			for (int i = 0; i < from.size(); i++) {
-//				graph.at(from.at(i)).at(to) = len;
-//			}
-//		}
-//	}
-//
-//	for (int i = 0; i < n + 1; i++) {
-//		bool flag = false;
-//		for (int j = 0; j < n + 2; j++) {
-//			if (graph.at(i).at(j) != INT_MAX) {
-//				flag = true;
-//				break;
-//			}
-//		}
-//		if (!flag) {
-//			graph.at(i).at(n + 1) = 0;
-//		}
-//	}
-//}
-//
-//void intialize(int* p, int r) {
-//	for (int i = 0; i < 9; i++) {
-//		if (p[i] != 0) graph.at(r).at(i) = p[i];
-//		else graph.at(r).at(i) = INT_MAX;
-//	}
-//}
-
-//#include <bits/stdc++.h>
-//using std::cin;
-//using std::cout;
-//using std::endl;
-//using std::vector;
-//using std::string;
-//using std::stack;
-//using std::stringstream;
-//
-//vector<vector<int> > graph;
-//vector<int> inDegree;
-//vector<int> outDegree;
-//vector<int> ve;
-//vector<int> vl;
-//bool hasCircle;
-//
-//void initialization(int);
-//
-//bool judge() {
-//	for (int i = 0; i < graph.size(); i++) {
-//		int od = 0;
-//		int id = 0;
-//		for (int j = 0; j < graph.size(); j++) {
-//			if (graph.at(i).at(j) != INT_MAX) od++;
-//		}
-//		for (int j = 0; j < graph.size(); j++) {
-//			if (graph.at(j).at(i) != INT_MAX) id++;
-//		}
-//
-//		inDegree[i] = id;
-//		outDegree[i] = od;
-//	}
-//
-//	stack<int> zero;
-//	for (int i = 0; i < inDegree.size(); i++) {
-//		if (inDegree.at(i) == 0) zero.push(i);
-//	}
-//
-//	while (!zero.empty()) {
-//		int top = zero.top();
-//		zero.pop();
-//		for (int i = 0; i < graph.size(); i++) {
-//			if (graph.at(top).at(i) != INT_MAX) {
-//				inDegree[i]--;
-//				if (inDegree[i] == 0) zero.push(i);
-//			}
-//		}
-//	}
-//
-//	for (int i = 0; i < inDegree.size(); i++) {
-//		if (inDegree[i] != 0) return false;
-//	}
-//
-//	return true;
-//}
-//
-//int calve(int pos, int n) {
-//	if (ve[pos] == -1) {
-//		int max = 0;
-//		for (int i = 0; i < n + 2; i++) {
-//			if (graph.at(i).at(pos) != INT_MAX) {
-//				int preve = 0;
-//				if (ve[i] == -1) preve = calve(i, n);
-//				else preve = ve[i];
-//				if (max < preve + graph.at(i).at(pos)) max = preve + graph.at(i).at(pos);
-//			}
-//		}
-//		return max;
-//	}
-//	else return ve[pos];
-//}
-//
-//int aoe(int n) {
-//	initialization(n);
-//	ve[0] = 0;
-//	if (!judge())
-//		return -2;
-//
-//	for (int i = 1; i < n + 2; i++) {
-//		vector<int> temp;
-//		for (int j = 0; j < n + 2; j++) {
-//
-//			if (graph.at(j).at(i) != INT_MAX) {
-//				temp.push_back(j);
-//			}
-//		}
-//
-//		//Find the max
-//		int max = 0;
-//		for (int j = 0; j < temp.size(); j++) {
-//			int t = temp[j];
-//			int k = t;
-//			int preve = calve(t, n);
-//			if ((max < graph.at(t).at(i) + preve) && (graph.at(t).at(i) != INT_MAX))
-//				max = graph.at(t).at(i) + preve;
-//		}
-//
-//		ve[i] = max;
-//	}
-//
-//	return ve[n + 1];
-//}
-//
-//void initialization(int n) {
-//	graph.resize(n + 2);
-//	inDegree.resize(n + 2, 0);
-//	outDegree.resize(n + 2, 0);
-//	ve.resize(n + 2);
-//	vl.resize(n + 2);
-//	for (int i = 0; i < n + 2; i++) {
-//		graph.at(i).resize(n + 2);
-//		ve.at(i) = -1;
-//		vl.at(i) = 0;
-//	}
-//
-//	for (int i = 0; i < n + 2; i++) {
-//		for (int j = 0; j < n + 2; j++) {
-//			graph.at(i).at(j) = INT_MAX;
-//		}
-//	}
-//
-//	int m = 0;
-//	while (m < n)
-//	{
-//		string t;
-//		getline(cin, t);
-//		//if (t == "") {
-//		//	i--;
-//		//	continue;
-//		//}
-//		if (t.size() == 3) {
-//			graph.at(0).at(t[0] - '0') = t[2] - '0';
-//		}
-//		else if (t.size() > 3) {
-//			vector<int> from;
-//
-//			int count1 = 0;
-//			while (t[count1] >= '0' && t[count1] <= '9') {
-//				count1++;
-//			}
-//			string to = t.substr(0, count1);
-//			stringstream to1(to);
-//			int tonum;
-//			to1 >> tonum;
-//
-//			int count2 = count1 + 1;
-//			while (t[count2] >= '0' && t[count2] <= '9') {
-//				count2++;
-//			}
-//			string len = t.substr(count1 + 1, count2 - count1 - 1);
-//			stringstream len1(len);
-//			int lennum;
-//			len1 >> lennum;
-//
-//			int k = count2 + 1;
-//			while (k < t.size()) {
-//				if (t[k] == ' ' && t[k] == ';') {
-//					k++;
-//					continue;
-//				}
-//				else if (t[k] > '0' && t[k] < '9') {
-//					int count = k;
-//					while (t[count] >= '0' && t[count] <= '9') {
-//						count++;
-//					}
-//					string temp = t.substr(k, count - k);
-//					stringstream temp1(temp);
-//					int c;
-//					temp1 >> c;
-//					from.push_back(c);
-//				}
-//				k++;
-//			}
-//
-//			for (int j = 0; j < from.size(); j++) {
-//				graph.at(from.at(j)).at(tonum) = lennum;
-//			}
-//		}
-//		m++;
-//	}
-//
-//	for (int i = 0; i < n + 1; i++) {
-//		bool flag = false;
-//		for (int j = 0; j < n + 2; j++) {
-//			if (graph.at(i).at(j) != INT_MAX) {
-//				flag = true;
-//				break;
-//			}
-//		}
-//		if (!flag) {
-//			graph.at(i).at(n + 1) = 0;
-//		}
-//	}
-//}
-//
-//int main() {
-//	int n;
-//	cin >> n;
-//	getchar();
-//	int t = aoe(n);
-//	if (t != -2) cout << t;
-//	else cout << "error";
 //	system("pause");
 //	return 0;
 //}
