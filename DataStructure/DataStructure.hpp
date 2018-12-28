@@ -11,6 +11,7 @@
 //#include "linearStructure/abstractQueue.h"
 #include "linearStructure/linkedQueue.h"
 #include "linearStructure/ArrayQueue.h"
+#include "linearStructure/MaxHeap.h"
 
 #include "tree/AVLTree.h"
 #include "MatrixAndGraph/AdjMatrixGraph.h"
