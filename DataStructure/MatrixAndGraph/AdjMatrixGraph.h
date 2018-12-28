@@ -32,8 +32,7 @@ namespace dataStructure {
 		int e;
 		void _dfs(int v, int* isVisit);
 		void _bfs(int v, int* isVisit);
-		void _floy(vector<vector<int> >& c, vector<vector<int> >& kay);
-		void _floy(vector<vector<int> > & c, vector<vector<int> >& kay);
+		void _floyd(vector<vector<int> >& c, vector<vector<int> >& kay);
 	public:
 		adjMatrixGraph(int n = 0);
 		int verticesSize() { return v; }
@@ -48,13 +47,12 @@ namespace dataStructure {
 		vector<edge> kruskal();
 		vector<edge> prim();
 		vector<int> dijkstra(int s);
-		vector<vector<int> > floy();
 		int floyd(int i, int j);
 		void floyd(vector<vector<int> >& c, vector<vector<int> >& kay);
 		edge* getAllEdge();
 	};
 
-	void adjMatrixGraph::_floy(vector<vector<int> >& c, vector<vector<int> >& kay) {
+	void adjMatrixGraph::_floyd(vector<vector<int> >& c, vector<vector<int> >& kay) {
 		c.resize(v + 1);
 		kay.resize(v + 1);
 
@@ -334,43 +332,43 @@ namespace dataStructure {
 		return rev;
 	}
 
-	void adjMatrixGraph::_floy(vector<vector<int> >& c, vector<vector<int> >& kay) {
-		c.resize(v + 1);
-		kay.resize(v + 1);
-		for (int i = 1; i <= v; i++) {
-			c[i].resize(v + 1);
-			for (int j = 1; j <= v; j++) {
-				c[i][j] = adjMatrix[i][j];
-				kay[i][j] = 0;
-			}
-		}
-		for (int i = 1; i <= v; i++) c[i][i] = 0;
+	//void adjMatrixGraph::_floy(vector<vector<int> >& c, vector<vector<int> >& kay) {
+	//	c.resize(v + 1);
+	//	kay.resize(v + 1);
+	//	for (int i = 1; i <= v; i++) {
+	//		c[i].resize(v + 1);
+	//		for (int j = 1; j <= v; j++) {
+	//			c[i][j] = adjMatrix[i][j];
+	//			kay[i][j] = 0;
+	//		}
+	//	}
+	//	for (int i = 1; i <= v; i++) c[i][i] = 0;
 
-		for (int k = 1; k <= v; k++) {
-			for (int i = 1; i <= v; i++) {
-				for (int j = 1; j <= v; j++) {
-					if (c[i][k] != INT_MAX && c[k][j] != INT_MAX && (c[i][j] == INT_MAX || c[k][j] > c[i][k] + c[k][j])) {
-						c[i][j] = c[i][k] + c[k][j];
-						kay[i][j] = k;
-					}
-				}
-			}
-		}
-	}
+	//	for (int k = 1; k <= v; k++) {
+	//		for (int i = 1; i <= v; i++) {
+	//			for (int j = 1; j <= v; j++) {
+	//				if (c[i][k] != INT_MAX && c[k][j] != INT_MAX && (c[i][j] == INT_MAX || c[k][j] > c[i][k] + c[k][j])) {
+	//					c[i][j] = c[i][k] + c[k][j];
+	//					kay[i][j] = k;
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 
-	vector<vector<int> > adjMatrixGraph::floy() {
-		vector<vector<int> > c, kay;
-		_floy(c, kay);
-		return c;
-	}
+	//vector<vector<int> > adjMatrixGraph::floy() {
+	//	vector<vector<int> > c, kay;
+	//	_floy(c, kay);
+	//	return c;
+	//}
 
 	int adjMatrixGraph::floyd(int i, int j) {
 		vector<vector<int> > c, kay;
-		_floy(c, kay);
+		_floyd(c, kay);
 		return c[i][j];
 	}
 	void adjMatrixGraph::floyd(vector<vector<int>>& c, vector<vector<int>>& kay){
-		_floy(c, kay);
+		_floyd(c, kay);
 	}
 }
 
