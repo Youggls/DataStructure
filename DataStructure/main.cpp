@@ -1,20 +1,37 @@
 #include <bits/stdc++.h>
 #include "DataStructure.hpp"
+#include <windows.h>  
+
+
 using std::cin;
 using std::cout;
 using std::endl;
 using std::string;
 using std::vector;
 using dataStructure::maxHeap;
+using dataStructure::AVLTree;
+using dataStructure::generateArray;
 
 int main() {
-	maxHeap<int> m(100);
-	int a[] = { 0,1,3,4,2,1,78,8,2,5,6 };
-	m.makeHeap(a, 10, 10);
-	m.heapSort();
-	for (int i = 0; i < 10; i++) {
-		cout << a[i] << ' ';
+	int n;
+	cin >> n;
+	int* arr = generateArray(n, 1, 0);
+	AVLTree<int> avl;
+	LARGE_INTEGER t1, t2, tc;
+	QueryPerformanceFrequency(&tc);
+	QueryPerformanceCounter(&t1);
+	for (int i = 0; i < n; i++) {
+		avl.insert(arr[i]);
 	}
+	QueryPerformanceCounter(&t2);
+	cout << "AVLTree insert n = " << n << " time " << (t2.QuadPart - t1.QuadPart)*1.0 / tc.QuadPart << endl;
+	QueryPerformanceFrequency(&tc);
+	QueryPerformanceCounter(&t1);
+	for (int i = 0; i < n; i++) {
+		avl.erase(arr[i]);
+	}
+	QueryPerformanceCounter(&t2);
+	cout << "AVLTree delete n = " << n << " time " << (t2.QuadPart - t1.QuadPart)*1.0 / tc.QuadPart << endl;
 	system("pause");
 	return 0;
 }
