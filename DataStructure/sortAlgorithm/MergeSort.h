@@ -40,7 +40,7 @@ namespace dataStructure {
 	void mergeSort(T* src, int n) {
 		for (int len = 1; len < n; len += len) {
 			for (int i = 0; i + len < n; i += 2 * len) {
-				_merge(src, i, std::min(i + 2 * len - 1, n));
+				_merge(src, i, min(i + 2 * len - 1, n));
 			}
 		}
 	}

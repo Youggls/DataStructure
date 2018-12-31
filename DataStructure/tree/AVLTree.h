@@ -8,6 +8,9 @@ using std::cin;
 using std::endl;
 #endif // !IOSTREAM
 
+#include <algorithm>
+using std::max;
+
 #ifndef BINARYTREE_H
 #define BINARYTREE_H
 #include "binaryTree.h"
@@ -155,7 +158,7 @@ namespace dataStructure {
 		void updateHeight(AVLTreeNode<T>* t) {
 			int hl = _getHeigt(t->left);
 			int hr = _getHeigt(t->right);
-			t->height = std::max(hl, hr) + 1;
+			t->height = max(hl, hr) + 1;
 		}
 	
 		AVLTreeNode<T>* fixLeft(AVLTreeNode<T>* node) {
@@ -190,7 +193,7 @@ namespace dataStructure {
 				int hl = _getHeigt(node->left);
 				int hr = _getHeigt(node->right);
 				int bf = hl - hr;
-				int height = std::max(hl, hr) + 1;
+				int height = max(hl, hr) + 1;
 				if (node->height != height) {
 					node->height = height;
 				}
@@ -215,7 +218,7 @@ namespace dataStructure {
 				int hl = _getHeigt(node->left);
 				int hr = _getHeigt(node->right);
 
-				int height = std::max(hl, hr) + 1;
+				int height = max(hl, hr) + 1;
 				int bf = hl - hr;
 
 				if (node->height == height) break;
@@ -259,7 +262,7 @@ namespace dataStructure {
 				node->ancestor = old->ancestor;
 				node->height = node->height;
 
-				replaceChild(old, child, ancestor);
+				replaceChild(old, node, old->ancestor);
 
 				old->left->ancestor = node;
 				if (old->right) {

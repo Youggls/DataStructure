@@ -39,6 +39,7 @@ namespace dataStructure {
 		size_t recursiveGetDepth(binaryTreeNode<T>* t);
 	protected:
 		binaryTreeNode<T>* getRoot() { return root; };
+		void setRoot(binaryTreeNode<T>* t) { root = t; }
 		void setNullRoot(binaryTreeNode<T>* node) {
 			if (root) throw badInput();
 			root = node;

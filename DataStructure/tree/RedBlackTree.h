@@ -5,24 +5,29 @@
 using namespace std;
 
 namespace dataStructure {
+	template <class T>
 	class RBTree {
 	private:
 
-		struct RBTreeNode {
-			int value;
+		template <class T>
+		class RBTreeNode {
+		public:
+			T value;
 			bool color;
-			RBTreeNode *leftTree, *rightTree, *parent;
+			RBTreeNode<T> *leftTree, *rightTree, *parent;
 
-			RBTreeNode() : value(0), color(RED), leftTree(NULL), rightTree(NULL), parent(NULL) { }
+			RBTreeNode() : value(0), color(RED), leftTree(NULL), rightTree(NULL), parent(NULL) { 
 
-			RBTreeNode* grandparent() {
+			}
+
+			RBTreeNode<T>* grandparent() {
 				if (parent == NULL) {
 					return NULL;
 				}
 				return parent->parent;
 			}
 
-			RBTreeNode* uncle() {
+			RBTreeNode<T>* uncle() {
 				if (grandparent() == NULL) {
 					return NULL;
 				}
@@ -32,7 +37,7 @@ namespace dataStructure {
 					return grandparent()->rightTree;
 			}
 
-			RBTreeNode* sibling() {
+			RBTreeNode<T>* sibling() {
 				if (parent->leftTree == this)
 					return parent->rightTree;
 				else
@@ -40,10 +45,10 @@ namespace dataStructure {
 			}
 		};
 
-		void rotate_right(RBTreeNode *p) {
-			RBTreeNode *gp = p->grandparent();
-			RBTreeNode *fa = p->parent;
-			RBTreeNode *y = p->rightTree;
+		void rotate_right(RBTreeNode<T> *p) {
+			RBTreeNode<T> *gp = p->grandparent();
+			RBTreeNode<T> *fa = p->parent;
+			RBTreeNode<T> *y = p->rightTree;
 
 			fa->leftTree = y;
 
@@ -65,14 +70,14 @@ namespace dataStructure {
 
 		}
 
-		void rotate_left(RBTreeNode *p) {
+		void rotate_left(RBTreeNode<T> *p) {
 			if (p->parent == NULL) {
 				root = p;
 				return;
 			}
-			RBTreeNode *gp = p->grandparent();
-			RBTreeNode *fa = p->parent;
-			RBTreeNode *y = p->leftTree;
+			RBTreeNode<T> *gp = p->grandparent();
+			RBTreeNode<T> *fa = p->parent;
+			RBTreeNode<T> *y = p->leftTree;
 
 			fa->rightTree = y;
 
@@ -93,7 +98,7 @@ namespace dataStructure {
 			}
 		}
 
-		void inorder(RBTreeNode *p) {
+		void inorder(RBTreeNode<T> *p) {
 			if (p == NIL)
 				return;
 			cout << p->value << '(';
@@ -114,13 +119,13 @@ namespace dataStructure {
 			return color ? "BLACK" : "RED";
 		}
 
-		RBTreeNode* getSmallestChild(RBTreeNode *p) {
+		RBTreeNode<T>* getSmallestChild(RBTreeNode<T> *p) {
 			if (p->leftTree == NIL)
 				return p;
 			return getSmallestChild(p->leftTree);
 		}
 
-		bool delete_child(RBTreeNode *p, int data) {
+		bool delete_child(RBTreeNode<T> *p, T data) {
 			if (p->value > data) {
 				if (p->leftTree == NIL) {
 					return false;
@@ -138,7 +143,7 @@ namespace dataStructure {
 					delete_one_child(p);
 					return true;
 				}
-				RBTreeNode *smallest = getSmallestChild(p->rightTree);
+				RBTreeNode<T> *smallest = getSmallestChild(p->rightTree);
 				swap(p->value, smallest->value);
 				delete_one_child(smallest);
 
@@ -149,8 +154,8 @@ namespace dataStructure {
 			}
 		}
 
-		void delete_one_child(RBTreeNode *p) {
-			RBTreeNode *child = p->leftTree == NIL ? p->rightTree : p->leftTree;
+		void delete_one_child(RBTreeNode<T> *p) {
+			RBTreeNode<T> *child = p->leftTree == NIL ? p->rightTree : p->leftTree;
 			if (p->parent == NULL && p->leftTree == NIL && p->rightTree == NIL) {
 				p = NULL;
 				root = p;
@@ -184,7 +189,7 @@ namespace dataStructure {
 			delete p;
 		}
 
-		void delete_case(RBTreeNode *p) {
+		void delete_case(RBTreeNode<T> *p) {
 			if (p->parent == NULL) {
 				p->color = BLACK;
 				return;
@@ -235,12 +240,12 @@ namespace dataStructure {
 			}
 		}
 
-		void insert(RBTreeNode *p, int data) {
+		void insert(RBTreeNode<T> *p, T data) {
 			if (p->value >= data) {
 				if (p->leftTree != NIL)
 					insert(p->leftTree, data);
 				else {
-					RBTreeNode *tmp = new RBTreeNode();
+					RBTreeNode<T> *tmp = new RBTreeNode<T>();
 					tmp->value = data;
 					tmp->leftTree = tmp->rightTree = NIL;
 					tmp->parent = p;
@@ -252,7 +257,7 @@ namespace dataStructure {
 				if (p->rightTree != NIL)
 					insert(p->rightTree, data);
 				else {
-					RBTreeNode *tmp = new RBTreeNode();
+					RBTreeNode<T> *tmp = new RBTreeNode<T>();
 					tmp->value = data;
 					tmp->leftTree = tmp->rightTree = NIL;
 					tmp->parent = p;
@@ -262,7 +267,7 @@ namespace dataStructure {
 			}
 		}
 
-		void insert_case(RBTreeNode *p) {
+		void insert_case(RBTreeNode<T> *p) {
 			if (p->parent == NULL) {
 				root = p;
 				p->color = BLACK;
@@ -301,7 +306,7 @@ namespace dataStructure {
 			}
 		}
 
-		void DeleteTree(RBTreeNode *p) {
+		void DeleteTree(RBTreeNode<T> *p) {
 			if (!p || p == NIL) {
 				return;
 			}
@@ -312,7 +317,7 @@ namespace dataStructure {
 	public:
 
 		RBTree() {
-			NIL = new RBTreeNode();
+			NIL = new RBTreeNode<T>();
 			NIL->color = BLACK;
 			root = NULL;
 		}
@@ -330,9 +335,9 @@ namespace dataStructure {
 			cout << endl;
 		}
 
-		void insert(int x) {
+		void insert(T x) {
 			if (root == NULL) {
-				root = new RBTreeNode();
+				root = new RBTreeNode<T>;
 				root->color = BLACK;
 				root->leftTree = root->rightTree = NIL;
 				root->value = x;
@@ -342,13 +347,13 @@ namespace dataStructure {
 			}
 		}
 
-		bool delete_value(int data) {
+		bool erase(T data) {
 			return delete_child(root, data);
 		}
 
 		bool isEmpty() { return (root == NULL); }
 
-		int getMax() {
+		T getMax() {
 			if (root == NULL) return -1;
 			RBTreeNode* t = root;
 			while (t->rightTree != NIL) {
@@ -357,10 +362,10 @@ namespace dataStructure {
 			return t->value;
 		}
 
-		int getMin() {
+		T getMin() {
 			return getSmallestChild(root)->value;
 		}
 	private:
-		RBTreeNode *root, *NIL;
+		RBTreeNode<T> *root, *NIL;
 	};
 }

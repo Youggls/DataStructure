@@ -24,7 +24,7 @@ using std::endl;
 namespace dataStructure {
 	int* generateArray(int size, int order, int swaptimes = -1) {
 		int* n = new int[size];
-		if (swaptimes == -1) swaptimes = size;
+		if (swaptimes == -1) swaptimes = size / 2;
 		if (order == 1) {
 			for (int i = 0; i < size; i++) {
 				n[i] = i + 1;

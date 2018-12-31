@@ -14,19 +14,21 @@ using dataStructure::binaryTreeNode;
 
 namespace dataStructure {
 	template <class T>
-	class binarySearchTree : public binaryTree<T> {
+	class binarySearchTree {
+	private:
+		binaryTreeNode<T>* root;
 	public:
-		binarySearchTree() :binaryTree<T>::binaryTree() { };
-		//	void makeTree(string& inOrder, string& preOrder);
+		binarySearchTree(){ 
+			root = NULL;
+		};
 		binaryTreeNode<T>* search(const T& theKey);
-		void insert(const T& theKey);
-		void deleteNode(const T& theKey);
-		//	void ascent();
+		inline void insert(const T& theKey);
+		inline void erase(const T& theKey);
 	};
 
 	template <class T>
 	binaryTreeNode<T>* binarySearchTree<T>::search(const T& thekey) {
-		binaryTreeNode<T>* temp = binaryTree<T>::getRoot();
+		binaryTreeNode<T>* temp = root;
 		while (true) {
 			if (temp == NULL) return NULL;
 			else if (thekey == temp->getData()) return temp;
@@ -37,27 +39,26 @@ namespace dataStructure {
 
 	template <class T>
 	void binarySearchTree<T>::insert(const T& theKey) {
-		binaryTreeNode<T>* tmp = binaryTree<T>::getRoot();
+		binaryTreeNode<T>* tmp = root;
 		binaryTreeNode<T>* target = NULL;
 		while (tmp) {
 			target = tmp;
 			if (theKey < tmp->getData()) tmp = tmp->getLeft();
 			else if (theKey > tmp->getData()) tmp = tmp->getRight();
-			else throw binaryTree<T>::badInput();
+			else return;
 		}
 
 		binaryTreeNode<T>* newNode = new binaryTreeNode<T>(theKey);
-		if (binaryTree<T>::getRoot()) {
+		if (root) {
 			if (theKey < target->getData()) target->setLeft(newNode);
 			else target->setRight(newNode);
 		}
-		else binaryTree<T>::setNullRoot(newNode);
+		else root = newNode;
 		return;
 	}
 
 	template <class T>
-	void binarySearchTree<T>::deleteNode(const T& theKey) {
-		binaryTreeNode<T>* root = binaryTree<T>::getRoot();
+	void binarySearchTree<T>::erase(const T& theKey) {
 		if (root == NULL) return;
 		if (root->getLeft() == NULL && root->getRight() == NULL && root->getData() == theKey) {
 			delete root;
@@ -74,61 +75,53 @@ namespace dataStructure {
 			if (t->getData() < theKey) {
 				t = t->getRight();
 			}
-			else {
+			else if(t->getData() > theKey){
 				t = t->getLeft();
 			}
 		}
 		if (t == NULL) return;
 
+		if (t->getLeft() && t->getRight()) {
+			binaryTreeNode<T>* s = t->getLeft();
+			binaryTreeNode<T>* ps = t;
 
-		if (ancestor == NULL) ancestor = root;
-		if (t->getLeft() == NULL && t->getRight() == NULL) {
-			if (ancestor->getData() > t->getData()) {
-				delete t;
-				ancestor->setLeft(NULL);
-				return;
+			while (s->getRight()) {
+				ps = s;
+				s = s->getRight();
+			}
+
+			binaryTreeNode<T>* q = new binaryTreeNode<T>(s->getData());
+			q->setLeft(t->getLeft());
+			q->setRight(t->getRight());
+
+			if (ancestor == NULL) {
+				root = q;
+			}
+			else if (ancestor->getLeft() && t->getData() == ancestor->getLeft()->getData()) {
+				ancestor->setLeft(q);
 			}
 			else {
-				delete t;
-				ancestor->setRight(NULL);
-				return;
+				ancestor->setRight(q);
 			}
+
+			if (ps->getData() == t->getData()) ancestor = q;
+			else ancestor = ps;
+
+			delete t;
+			t = s;
 		}
-		else if (t->getRight() == NULL && t->getLeft() != NULL) {
-			if (ancestor->getData() > t->getData()) {
-				ancestor->setLeft(t->getLeft());
-				delete t;
-				return;
-			}
-			else {
-				ancestor->setRight(t->getLeft());
-				delete t;
-				return;
-			}
-		}
-		else if (t->getRight() != NULL && t->getLeft() == NULL) {
-			if (ancestor->getData() > t->getData()) {
-				ancestor->setLeft(t->getRight());
-				delete t;
-				return;
-			}
-			else {
-				ancestor->setRight(t->getRight());
-				delete t;
-				return;
-			}
-		}
+
+		binaryTreeNode<T>* c = NULL;
+		if (t->getLeft()) c = t->getLeft();
+		else c = t->getRight();
+
+		if (t->getData() == root->getData()) root = c;
 		else {
-			binaryTreeNode<T>* maxOfLeft = t->getLeft();
-			binaryTreeNode<T>* p = t;
-			while (maxOfLeft->getRight() != NULL) {
-				p = maxOfLeft;
-				maxOfLeft = maxOfLeft->getRight();
+			if (t == ancestor->getLeft()) {
+				ancestor->setLeft(c);
 			}
-			t->setData(maxOfLeft->getData());
-			delete maxOfLeft;
-			p->setLeft(NULL);
-			return;
+			else ancestor->setRight(c);
 		}
+		delete t;
 	}
 }

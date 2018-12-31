@@ -230,7 +230,7 @@ namespace dataStructure {
 	public:
 		BTree(int o) { order = o; root = NULL; min = int(o / 2 + (o / 2.0 - o / 2) * 2) - 1; };
 		void insert(const T& theKey);
-		void deleteElement(const T& theKey);
+		void erase(const T& theKey);
 	};
 
 	template <class T>
@@ -432,7 +432,7 @@ namespace dataStructure {
 	}
 
 	template <class T>
-	void BTree<T>::deleteElement(const T& theKey) {
+	void BTree<T>::erase(const T& theKey) {
 		if (root == NULL || root->size() == 0) return;
 
 		BTreeNode<T>* t = root;
